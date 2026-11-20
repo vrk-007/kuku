@@ -25,7 +25,8 @@ DEFAULT_MODELS = {
     "gemini": "gemini-2.5-flash",
     "openai": "gpt-4o-mini",
     "anthropic": "claude-3-5-haiku-latest",
-    "runcrate": "deepseek-ai/DeepSeek-V4.1-Flash",
+    "runcrate": "Qwen/Qwen3.8-Flash",
+    "custom": "",
 }
 
 # Approximate USD per 1M tokens (input, output) for cost estimation in reports
@@ -59,8 +60,8 @@ def load_dotenv_simple(env_path: str | Path = ".env") -> None:
 
 
 def _extract_json_object(raw_text: str) -> dict[str, Any]:
-    """Robustly parse JSON from an LLM response, stripping markdown fences if present."""
-    text = raw_text.strip()
+    """Robustly parse JSON from an LLM response, stripping thinking tags & markdown fences."""
+    text = re.sub(r"<think>.*?</think>", "", raw_text, flags=re.DOTALL | re.IGNORECASE).strip()
     if text.startswith("```"):
         text = re.sub(r"^```(?:json)?\s*", "", text, flags=re.IGNORECASE)
         text = re.sub(r"\s*```$", "", text)
@@ -86,6 +87,7 @@ class LLMClient:
         provider: str | None = None,
         model: str | None = None,
         api_key: str | None = None,
+        base_url: str | None = None,
         cache_dir: str | Path = "outputs/.cache",
         temperature: float = 0.2,
         min_delay_sec: float = 0.5,
@@ -113,12 +115,14 @@ class LLMClient:
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self._last_call_ts = 0.0
 
-        # Resolve API key
+        # Resolve API key & optional custom OpenAI-compatible base URL
+        self.base_url = (base_url or os.environ.get("LLM_BASE_URL", "")).strip()
         env_key_map = {
             "gemini": "GEMINI_API_KEY",
             "openai": "OPENAI_API_KEY",
             "anthropic": "ANTHROPIC_API_KEY",
             "runcrate": "RUNCRATE_API_KEY",
+            "custom": "CUSTOM_API_KEY",
         }
         self.api_key = (api_key or "").strip() or os.environ.get(env_key_map[self.provider], "").strip()
         if self.provider == "gemini" and not self.api_key:
@@ -265,18 +269,26 @@ class LLMClient:
             return self._call_openai_rest(
                 model, system_prompt, user_prompt, url="https://api.runcrate.ai/v1/chat/completions"
             )
+        if self.provider == "custom":
+            if not self.base_url:
+                raise RuntimeError("Custom provider requires a Base URL (e.g. https://api.groq.com/openai/v1).")
+            u = self.base_url.rstrip("/")
+            if not u.endswith("/chat/completions"):
+                u = f"{u}/chat/completions"
+            return self._call_openai_rest(model, system_prompt, user_prompt, url=u)
         if self.provider == "anthropic":
             return self._call_anthropic_rest(model, system_prompt, user_prompt)
         raise ValueError(f"Unknown provider: {self.provider}")
 
     def _post_json(self, url: str, headers: dict[str, str], payload: dict[str, Any]) -> dict[str, Any]:
+        req_headers = {"User-Agent": "PromoFinder/1.0", **headers}
         req = urllib.request.Request(
             url,
             data=json.dumps(payload).encode("utf-8"),
-            headers=headers,
+            headers=req_headers,
             method="POST",
         )
-        with urllib.request.urlopen(req, timeout=120) as resp:
+        with urllib.request.urlopen(req, timeout=60) as resp:
             return json.loads(resp.read().decode("utf-8"))
 
     def _call_gemini_rest(self, model: str, system_prompt: str, user_prompt: str) -> tuple[str, int, int]:
@@ -321,8 +333,16 @@ class LLMClient:
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}",
         }
-        resp = self._post_json(url, headers, payload)
-        text = resp["choices"][0]["message"]["content"]
+        try:
+            resp = self._post_json(url, headers, payload)
+        except urllib.error.HTTPError as e:
+            # Some OpenAI-compatible gateways/models reject response_format=json_object
+            if e.code == 400 and "response_format" in payload:
+                payload.pop("response_format", None)
+                resp = self._post_json(url, headers, payload)
+            else:
+                raise
+        text = resp["choices"][0]["message"]["content"] or ""
         usage = resp.get("usage", {})
         return text, int(usage.get("prompt_tokens", 0)), int(usage.get("completion_tokens", 0))
 

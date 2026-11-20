@@ -34,14 +34,38 @@ st.caption("Upload screenplay episodes → get ranked 20–60s promo clips (hook
 # ---------------- Sidebar ----------------
 with st.sidebar:
     st.header("⚙️ Settings")
-    provider = st.selectbox("Provider", list(DEFAULT_MODELS), index=0)
+    provider_labels = {
+        "gemini": "gemini",
+        "openai": "openai",
+        "anthropic": "anthropic",
+        "runcrate": "runcrate",
+        "custom": "custom (any OpenAI-compatible)",
+    }
+    provider = st.selectbox(
+        "Provider",
+        list(provider_labels.keys()),
+        format_func=lambda k: provider_labels[k],
+        index=0,
+    )
+    base_url = ""
+    if provider == "custom":
+        base_url = st.text_input(
+            "Base URL",
+            placeholder="https://api.groq.com/openai/v1",
+            help="Works with Groq, OpenRouter, Together, DeepSeek, Mistral, Ollama, or any OpenAI-compatible endpoint.",
+        )
     default_model = os.environ.get("LLM_MODEL", "") if provider == os.environ.get("LLM_PROVIDER", "gemini") else ""
-    model = st.text_input("Model", value=default_model or DEFAULT_MODELS[provider])
+    model = st.text_input(
+        "Model",
+        value=default_model or DEFAULT_MODELS[provider],
+        placeholder="e.g. llama-3.3-70b-versatile" if provider == "custom" else "",
+    )
     env_key_name = {
         "gemini": "GEMINI_API_KEY",
         "openai": "OPENAI_API_KEY",
         "anthropic": "ANTHROPIC_API_KEY",
         "runcrate": "RUNCRATE_API_KEY",
+        "custom": "CUSTOM_API_KEY",
     }[provider]
     preset_key = _secret(env_key_name) or os.environ.get(env_key_name, "")
     typed_key = st.text_input(
@@ -78,6 +102,9 @@ if run_clicked:
     if not api_key:
         st.error(f"Please paste a {provider} API key in the sidebar.")
         st.stop()
+    if provider == "custom" and (not base_url.strip() or not model.strip()):
+        st.error("Please enter both a Base URL and a Model ID for the custom provider.")
+        st.stop()
     try:
         files = [(u.name, u.getvalue()) for u in uploads]
         parsed = parse_uploaded_files(files, show_title=show_title.strip() or "Uploaded Show")
@@ -100,6 +127,7 @@ if run_clicked:
         provider=provider,
         model=model.strip() or None,
         api_key=api_key,
+        base_url=base_url.strip() or None,
         cache_dir=out_dir / ".cache",
         min_delay_sec=delay,
     )
