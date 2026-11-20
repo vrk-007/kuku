@@ -149,11 +149,18 @@ if res:
     with tab_cards:
         if not ranked:
             st.warning("No promos passed validation. Check the audit tab for rejection reasons.")
+        tier_badges = {
+            "Tier 1: Post First (Cold Traffic)": "🚀 Best for New Viewers",
+            "Tier 2: Scale / A-B Test": "🧪 Good for A/B Testing",
+            "Tier 3: Retargeting / Editor Review": "🎯 Editor Review / Retargeting",
+        }
         for p in ranked:
             sc = p["scores"]
+            arc_title = p["arc_label"].replace("_", " ").strip().title()
+            badge = tier_badges.get(p["posting_tier"], p["posting_tier"])
             with st.expander(
-                f"#{p['rank']} · {p['final_score']}/10 · {p['total_duration_sec']:.1f}s · "
-                f"{p['arc_label']} · {p['posting_tier']}",
+                f"#{p['rank']} — {arc_title}  |  ⭐ {p['final_score']:.1f}/10  |  "
+                f"⏱️ {p['total_duration_sec']:.0f}s  |  {badge}",
                 expanded=p["rank"] <= 3,
             ):
                 st.markdown(f"**Playback order:** " + " → ".join(
