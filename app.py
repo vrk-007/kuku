@@ -31,6 +31,12 @@ def _secret(name: str) -> str:
 
 st.title("🎬 Microdrama Promo Finder")
 st.caption("Upload screenplay episodes → get ranked 20–60s promo clips (hook + cliffhanger + standalone clarity).")
+with st.expander("ℹ️ How it works (3 steps)", expanded=False):
+    st.markdown(
+        "1. **Upload episode `.txt` scripts** — our parser extracts timestamps, dialogue, camera & action beats.\n"
+        "2. **AI finds & stitches promos** — picks 20–60s single-episode and cross-episode clips.\n"
+        "3. **Rule checks + Blind Judge** — hard rules filter out bad durations/cuts, then a blind first-time viewer scores and ranks the best promos."
+    )
 
 # ---------------- Sidebar ----------------
 with st.sidebar:
@@ -120,11 +126,22 @@ res = st.session_state.get("result")
 if res:
     ranked, audit, metrics, paths = res["ranked"], res["audit"], res["metrics"], res["paths"]
 
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Ranked promos", len(ranked))
-    c2.metric("Rejected by validator", audit["total_rejected"])
-    c3.metric("API calls (cache hits)", f"{metrics['api_calls']} ({metrics['cache_hits']})")
-    c4.metric("Est. cost", f"${metrics['estimated_cost_usd']:.4f}")
+    c1, c2, c3 = st.columns(3)
+    c1.metric(
+        "Ready-to-use promos",
+        len(ranked),
+        help="Clips that passed all hard rules (20–60s, clean sentence cuts, verified timestamps) and were scored by the blind judge.",
+    )
+    c2.metric(
+        "Filtered out by rules",
+        audit["total_rejected"],
+        help="AI draft clips automatically dropped for breaking a hard rule (e.g. >60s, <20s, or duplicate overlap). Check the Validation audit tab to see why.",
+    )
+    c3.metric(
+        "AI calls (cache hits)",
+        f"{metrics['api_calls']} ({metrics['cache_hits']})",
+        help="Live API calls made vs. saved answers reused from cache.",
+    )
 
     d1, d2, d3 = st.columns(3)
     for col, key, label, mime in (
@@ -167,6 +184,10 @@ if res:
         components.html(Path(paths["report_html"]).read_text(encoding="utf-8"), height=900, scrolling=True)
 
     with tab_audit:
+        st.caption(
+            "Every AI-proposed clip is checked by pure-Python rules (20–60s duration, valid block IDs, no mid-sentence cuts, no duplicates). "
+            "Clips that fail are filtered out here so only clean, editable promos reach your ranked list."
+        )
         st.json(audit["rejection_counts_by_rule"])
         st.dataframe(
             [
