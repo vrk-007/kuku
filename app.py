@@ -31,12 +31,6 @@ def _secret(name: str) -> str:
 
 st.title("🎬 Microdrama Promo Finder")
 st.caption("Upload screenplay episodes → get ranked 20–60s promo clips (hook + cliffhanger + standalone clarity).")
-with st.expander("ℹ️ How it works (3 steps)", expanded=False):
-    st.markdown(
-        "1. **Upload episode `.txt` scripts** — our parser extracts timestamps, dialogue, camera & action beats.\n"
-        "2. **AI finds & stitches promos** — picks 20–60s single-episode and cross-episode clips.\n"
-        "3. **Rule checks + Blind Judge** — hard rules filter out bad durations/cuts, then a blind first-time viewer scores and ranks the best promos."
-    )
 
 # ---------------- Sidebar ----------------
 with st.sidebar:
