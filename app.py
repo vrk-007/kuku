@@ -47,10 +47,17 @@ with st.sidebar:
         help="Leave blank to use the default key, or paste your own key to override it for this session (never stored on disk).",
     )
     api_key = typed_key.strip() or preset_key
-    delay = st.slider("Seconds between API calls", 0.0, 10.0, 1.0, 0.5, help="Raise this if you hit 429 rate limits.")
-    use_cache = st.checkbox("Reuse cached AI answers", value=True)
-    st.markdown("---")
-    st.caption("Tip: re-running the same files is free thanks to the cache.")
+    with st.expander("Advanced settings", expanded=False):
+        delay = st.slider(
+            "Seconds between API calls",
+            0.0,
+            10.0,
+            1.0,
+            0.5,
+            help="Raise this if you hit API rate limits (HTTP 429).",
+        )
+        use_cache = st.checkbox("Reuse cached AI answers", value=True)
+        st.caption("If you upload the exact same files again, it reuses saved results instead of calling the AI again.")
 
 # ---------------- Upload ----------------
 show_title = st.text_input("Show title", value="Uploaded Show")
