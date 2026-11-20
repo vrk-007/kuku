@@ -137,14 +137,6 @@ if res:
         help="Live API calls made vs. saved answers reused from cache.",
     )
 
-    d1, d2, d3 = st.columns(3)
-    for col, key, label, mime in (
-        (d1, "promos_json", "⬇️ promos.json", "application/json"),
-        (d2, "promos_csv", "⬇️ promos.csv", "text/csv"),
-        (d3, "report_html", "⬇️ report.html", "text/html"),
-    ):
-        col.download_button(label, data=Path(paths[key]).read_bytes(), file_name=Path(paths[key]).name, mime=mime)
-
     tab_cards, tab_report, tab_audit = st.tabs(["🏆 Ranked promos", "📄 Full HTML report", "🛡️ Validation audit"])
 
     with tab_cards:
