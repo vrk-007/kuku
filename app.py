@@ -43,8 +43,8 @@ with st.sidebar:
     typed_key = st.text_input(
         "API key",
         type="password",
-        placeholder="Using server key" if preset_key else "Paste your API key",
-        help="Never stored on disk; used only for this session.",
+        placeholder="Already default key is in use" if preset_key else "Paste your API key",
+        help="Leave blank to use the default key, or paste your own key to override it for this session (never stored on disk).",
     )
     api_key = typed_key.strip() or preset_key
     delay = st.slider("Seconds between API calls", 0.0, 10.0, 1.0, 0.5, help="Raise this if you hit 429 rate limits.")
