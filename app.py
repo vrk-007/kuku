@@ -11,7 +11,6 @@ import os
 from pathlib import Path
 
 import streamlit as st
-import streamlit.components.v1 as components
 
 from promo_finder.llm_client import DEFAULT_MODELS, LLMClient, load_dotenv_simple
 from promo_finder.pipeline import parse_uploaded_files, run_pipeline
@@ -144,7 +143,7 @@ if res:
         help="Live API calls made vs. saved answers reused from cache.",
     )
 
-    tab_cards, tab_report, tab_audit = st.tabs(["🏆 Ranked promos", "📄 Full HTML report", "🛡️ Validation audit"])
+    tab_cards, tab_audit = st.tabs(["🏆 Ranked promos", "🛡️ Validation audit"])
 
     with tab_cards:
         if not ranked:
@@ -179,9 +178,6 @@ if res:
                     st.caption("Flags: " + ", ".join(p["quality_flags"]))
                 with st.expander("Clip script"):
                     st.code(p["blind_clip_script"], language=None)
-
-    with tab_report:
-        components.html(Path(paths["report_html"]).read_text(encoding="utf-8"), height=900, scrolling=True)
 
     with tab_audit:
         st.caption(
