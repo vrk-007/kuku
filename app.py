@@ -272,8 +272,11 @@ if res:
                 else:
                     reason = r.get("detail", "Did not pass validation rules.")
 
-                header = f"**{title}**" + (f"  ·  ⏱️ {dur:.0f}s" if dur is not None else "")
+                header = f"**{title}**" + (f"  |  ⏱️ {dur:.0f}s" if dur is not None else "")
                 with st.container(border=True):
                     st.markdown(header)
-                    st.caption(f"Clip: {clip_loc}")
+                    st.markdown(f"**Clip:** {clip_loc}")
                     st.markdown(f"🚫 {reason}")
+                    if r.get("clip_script"):
+                        with st.expander("Clip script"):
+                            st.code(r["clip_script"], language=None)

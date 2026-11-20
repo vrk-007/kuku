@@ -172,6 +172,12 @@ def validate_candidates(
         ]
         if total_duration_sec is None and resolved_segs:
             total_duration_sec = _total_duration(resolved_segs)
+        script_lines: list[str] = []
+        if resolved_segs:
+            for i, s in enumerate(resolved_segs, start=1):
+                if len(resolved_segs) > 1:
+                    script_lines.append(f"=== CLIP SEGMENT {i} ({s['duration_sec']:.1f}s) ===")
+                script_lines.extend(s.get("raw_script_lines", []))
         rejected_entries.append(
             {
                 "candidate_id": cand.get("candidate_id"),
@@ -181,6 +187,7 @@ def validate_candidates(
                 "detail": detail,
                 "total_duration_sec": total_duration_sec,
                 "segments": segs_summary,
+                "clip_script": "\n".join(script_lines) if script_lines else "",
                 "raw_segments": cand.get("segments", []),
             }
         )
