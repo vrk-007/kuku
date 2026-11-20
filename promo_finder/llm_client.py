@@ -25,6 +25,7 @@ DEFAULT_MODELS = {
     "gemini": "gemini-2.5-flash",
     "openai": "gpt-4o-mini",
     "anthropic": "claude-3-5-haiku-latest",
+    "runcrate": "deepseek-ai/DeepSeek-V4.1-Flash",
 }
 
 # Approximate USD per 1M tokens (input, output) for cost estimation in reports
@@ -91,16 +92,20 @@ class LLMClient:
         max_retries: int = 5,
     ) -> None:
         load_dotenv_simple()
-        self.provider = (provider or os.environ.get("LLM_PROVIDER") or "gemini").strip().lower()
+        env_provider = (os.environ.get("LLM_PROVIDER") or "gemini").strip().lower()
+        self.provider = (provider or env_provider).strip().lower()
         if self.provider not in DEFAULT_MODELS:
             raise ValueError(f"Unsupported provider {self.provider!r}. Choose from: {list(DEFAULT_MODELS)}")
-        self.model = (model or os.environ.get("LLM_MODEL") or DEFAULT_MODELS[self.provider]).strip()
+        same_provider = self.provider == env_provider
+        env_model = os.environ.get("LLM_MODEL") if same_provider else None
+        self.model = (model or env_model or DEFAULT_MODELS[self.provider]).strip()
         # Optional per-role model overrides: LLM_MODEL_BIBLE / _FINDER / _STITCHER / _JUDGE
         self.role_models: dict[str, str] = {}
-        for role in ("bible", "finder", "stitcher", "judge"):
-            v = os.environ.get(f"LLM_MODEL_{role.upper()}", "").strip()
-            if v:
-                self.role_models[role] = v
+        if same_provider:
+            for role in ("bible", "finder", "stitcher", "judge"):
+                v = os.environ.get(f"LLM_MODEL_{role.upper()}", "").strip()
+                if v:
+                    self.role_models[role] = v
         self.temperature = temperature
         self.min_delay_sec = min_delay_sec
         self.max_retries = max_retries
@@ -113,6 +118,7 @@ class LLMClient:
             "gemini": "GEMINI_API_KEY",
             "openai": "OPENAI_API_KEY",
             "anthropic": "ANTHROPIC_API_KEY",
+            "runcrate": "RUNCRATE_API_KEY",
         }
         self.api_key = (api_key or "").strip() or os.environ.get(env_key_map[self.provider], "").strip()
         if self.provider == "gemini" and not self.api_key:
@@ -255,6 +261,10 @@ class LLMClient:
             return self._call_gemini_rest(model, system_prompt, user_prompt)
         if self.provider == "openai":
             return self._call_openai_rest(model, system_prompt, user_prompt)
+        if self.provider == "runcrate":
+            return self._call_openai_rest(
+                model, system_prompt, user_prompt, url="https://api.runcrate.ai/v1/chat/completions"
+            )
         if self.provider == "anthropic":
             return self._call_anthropic_rest(model, system_prompt, user_prompt)
         raise ValueError(f"Unknown provider: {self.provider}")
@@ -291,8 +301,13 @@ class LLMClient:
         usage = resp.get("usageMetadata", {})
         return text, int(usage.get("promptTokenCount", 0)), int(usage.get("candidatesTokenCount", 0))
 
-    def _call_openai_rest(self, model: str, system_prompt: str, user_prompt: str) -> tuple[str, int, int]:
-        url = "https://api.openai.com/v1/chat/completions"
+    def _call_openai_rest(
+        self,
+        model: str,
+        system_prompt: str,
+        user_prompt: str,
+        url: str = "https://api.openai.com/v1/chat/completions",
+    ) -> tuple[str, int, int]:
         payload = {
             "model": model,
             "temperature": self.temperature,

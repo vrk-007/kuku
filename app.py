@@ -37,7 +37,12 @@ with st.sidebar:
     provider = st.selectbox("Provider", list(DEFAULT_MODELS), index=0)
     default_model = os.environ.get("LLM_MODEL", "") if provider == os.environ.get("LLM_PROVIDER", "gemini") else ""
     model = st.text_input("Model", value=default_model or DEFAULT_MODELS[provider])
-    env_key_name = {"gemini": "GEMINI_API_KEY", "openai": "OPENAI_API_KEY", "anthropic": "ANTHROPIC_API_KEY"}[provider]
+    env_key_name = {
+        "gemini": "GEMINI_API_KEY",
+        "openai": "OPENAI_API_KEY",
+        "anthropic": "ANTHROPIC_API_KEY",
+        "runcrate": "RUNCRATE_API_KEY",
+    }[provider]
     preset_key = _secret(env_key_name) or os.environ.get(env_key_name, "")
     typed_key = st.text_input(
         "API key",
