@@ -153,8 +153,25 @@ def validate_candidates(
     adjusted_entries: list[dict[str, Any]] = []
     rule_counts: dict[str, int] = {}
 
-    def _reject(cand: dict[str, Any], rule: str, detail: str) -> None:
+    def _reject(
+        cand: dict[str, Any],
+        rule: str,
+        detail: str,
+        resolved_segs: list[dict[str, Any]] | None = None,
+        total_duration_sec: float | None = None,
+    ) -> None:
         rule_counts[rule] = rule_counts.get(rule, 0) + 1
+        segs_summary = [
+            {
+                "episode": s["episode"],
+                "start_ts": s["start_ts"],
+                "end_ts": s["end_ts"],
+                "duration_sec": s["duration_sec"],
+            }
+            for s in (resolved_segs or [])
+        ]
+        if total_duration_sec is None and resolved_segs:
+            total_duration_sec = _total_duration(resolved_segs)
         rejected_entries.append(
             {
                 "candidate_id": cand.get("candidate_id"),
@@ -162,6 +179,8 @@ def validate_candidates(
                 "arc_label": cand.get("arc_label"),
                 "rule_violated": rule,
                 "detail": detail,
+                "total_duration_sec": total_duration_sec,
+                "segments": segs_summary,
                 "raw_segments": cand.get("segments", []),
             }
         )
@@ -224,6 +243,7 @@ def validate_candidates(
                     cand,
                     "STITCH_SINGLE_EPISODE",
                     f"Cross-episode promo only uses episode(s) {sorted(distinct_eps)}.",
+                    resolved_segs=resolved,
                 )
                 continue
 
@@ -248,6 +268,8 @@ def validate_candidates(
                 cand,
                 "DURATION_TOO_SHORT",
                 f"Duration {final_dur:.1f}s < {MIN_DURATION}s (even after ±{SNAP_TOLERANCE}s snap).",
+                resolved_segs=resolved,
+                total_duration_sec=final_dur,
             )
             continue
         if final_dur > MAX_DURATION:
@@ -255,6 +277,8 @@ def validate_candidates(
                 cand,
                 "DURATION_TOO_LONG",
                 f"Duration {final_dur:.1f}s > {MAX_DURATION}s (even after ±{SNAP_TOLERANCE}s snap).",
+                resolved_segs=resolved,
+                total_duration_sec=final_dur,
             )
             continue
 
@@ -278,6 +302,8 @@ def validate_candidates(
                             cand,
                             "DUPLICATE_OVERLAP",
                             f"Overlaps {ov*100:.0f}% with {existing['candidate_id']} on Ep {resolved[0]['episode']}.",
+                            resolved_segs=resolved,
+                            total_duration_sec=final_dur,
                         )
                         is_dup = True
                         break

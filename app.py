@@ -214,14 +214,66 @@ if res:
 
     with tab_audit:
         st.caption(
-            "Every AI-proposed clip is checked by pure-Python rules (20–60s duration, valid block IDs, no mid-sentence cuts, no duplicates). "
-            "Clips that fail are filtered out here so only clean, editable promos reach your ranked list."
+            "Every draft clip is checked against hard rules (20–60s duration, clean timestamps, no duplicates) "
+            "so only ready-to-edit promos reach your ranked list."
         )
-        st.json(audit["rejection_counts_by_rule"])
-        st.dataframe(
-            [
-                {"id": r["candidate_id"], "rule": r["rule_violated"], "detail": r["detail"]}
-                for r in audit["rejected_candidates"]
-            ],
-            use_container_width=True,
-        )
+        rejected = audit.get("rejected_candidates", [])
+        if not rejected:
+            st.success("All AI draft clips passed the rules — nothing was filtered out!")
+        else:
+            rule_labels = {
+                "DURATION_TOO_LONG": "too long (>60s)",
+                "DURATION_TOO_SHORT": "too short (<20s)",
+                "DUPLICATE_OVERLAP": "duplicate overlap",
+                "STITCH_SINGLE_EPISODE": "single-episode mashup",
+                "HALLUCINATED_BLOCK_ID": "invalid scene reference",
+                "REVERSED_INTRA_SEGMENT": "reversed timestamps",
+                "INVALID_EPISODE": "unknown episode",
+                "EMPTY_SEGMENTS": "empty clip",
+            }
+            summary_parts = [
+                f"{count} {rule_labels.get(rule, rule.lower().replace('_', ' '))}"
+                for rule, count in audit.get("rejection_counts_by_rule", {}).items()
+            ]
+            if summary_parts:
+                st.markdown(f"**Filtered out ({len(rejected)}):** " + " · ".join(summary_parts))
+
+            for r in rejected:
+                title = (r.get("arc_label") or "Draft Clip").replace("_", " ").strip().title()
+                segs = r.get("segments") or []
+                dur = r.get("total_duration_sec")
+                rule = r.get("rule_violated", "")
+
+                if segs:
+                    clip_loc = " → ".join(
+                        f"Ep {s['episode']} ({s['start_ts']}–{s['end_ts']}, {s['duration_sec']:.1f}s)"
+                        for s in segs
+                    )
+                else:
+                    raw_eps = sorted({s.get("episode") for s in (r.get("raw_segments") or []) if s.get("episode") is not None})
+                    clip_loc = ", ".join(f"Ep {e}" for e in raw_eps) if raw_eps else "Episode unavailable"
+
+                if rule == "DURATION_TOO_LONG":
+                    dur_txt = f" ({dur:.0f}s)" if dur is not None else ""
+                    reason = f"Too long{dur_txt} — promos must be **20–60 seconds**."
+                elif rule == "DURATION_TOO_SHORT":
+                    dur_txt = f" ({dur:.0f}s)" if dur is not None else ""
+                    reason = f"Too short{dur_txt} — promos must be **20–60 seconds**."
+                elif rule == "STITCH_SINGLE_EPISODE":
+                    eps = sorted({s["episode"] for s in segs}) or sorted(
+                        {s.get("episode") for s in (r.get("raw_segments") or []) if s.get("episode") is not None}
+                    )
+                    ep_txt = f"Episode {eps[0]}" if len(eps) == 1 else "a single episode"
+                    reason = f"Pitched as a cross-episode mashup, but it only used **{ep_txt}**."
+                elif rule == "DUPLICATE_OVERLAP":
+                    reason = "Mostly duplicates another clip from the same episode — kept one copy to avoid repeats."
+                elif rule in ("HALLUCINATED_BLOCK_ID", "REVERSED_INTRA_SEGMENT", "INVALID_EPISODE"):
+                    reason = "Referenced a scene or timestamp that doesn't match the screenplay — safely dropped."
+                else:
+                    reason = r.get("detail", "Did not pass validation rules.")
+
+                header = f"**{title}**" + (f"  ·  ⏱️ {dur:.0f}s" if dur is not None else "")
+                with st.container(border=True):
+                    st.markdown(header)
+                    st.caption(f"Clip: {clip_loc}")
+                    st.markdown(f"🚫 {reason}")
