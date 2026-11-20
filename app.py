@@ -1,0 +1,177 @@
+"""Streamlit web app: upload screenplay episodes -> ranked 20-60s promo clips.
+
+Run:  streamlit run app.py
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+from pathlib import Path
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+from promo_finder.llm_client import DEFAULT_MODELS, LLMClient, load_dotenv_simple
+from promo_finder.pipeline import parse_uploaded_files, run_pipeline
+
+st.set_page_config(page_title="Promo Finder", page_icon="🎬", layout="wide")
+load_dotenv_simple()
+
+WEB_OUT_ROOT = Path("outputs_web")
+
+
+def _secret(name: str) -> str:
+    try:
+        return str(st.secrets.get(name, "") or "")
+    except Exception:
+        return ""
+
+
+st.title("🎬 Microdrama Promo Finder")
+st.caption("Upload screenplay episodes → get ranked 20–60s promo clips (hook + cliffhanger + standalone clarity).")
+
+# ---------------- Sidebar ----------------
+with st.sidebar:
+    st.header("⚙️ Settings")
+    provider = st.selectbox("Provider", list(DEFAULT_MODELS), index=0)
+    default_model = os.environ.get("LLM_MODEL", "") if provider == os.environ.get("LLM_PROVIDER", "gemini") else ""
+    model = st.text_input("Model", value=default_model or DEFAULT_MODELS[provider])
+    env_key_name = {"gemini": "GEMINI_API_KEY", "openai": "OPENAI_API_KEY", "anthropic": "ANTHROPIC_API_KEY"}[provider]
+    preset_key = _secret(env_key_name) or os.environ.get(env_key_name, "")
+    typed_key = st.text_input(
+        "API key",
+        type="password",
+        placeholder="Using server key" if preset_key else "Paste your API key",
+        help="Never stored on disk; used only for this session.",
+    )
+    api_key = typed_key.strip() or preset_key
+    delay = st.slider("Seconds between API calls", 0.0, 10.0, 1.0, 0.5, help="Raise this if you hit 429 rate limits.")
+    use_cache = st.checkbox("Reuse cached AI answers", value=True)
+    st.markdown("---")
+    st.caption("Tip: re-running the same files is free thanks to the cache.")
+
+# ---------------- Upload ----------------
+show_title = st.text_input("Show title", value="Uploaded Show")
+uploads = st.file_uploader(
+    "Upload episode screenplay files (.txt)", type=["txt"], accept_multiple_files=True
+)
+
+if uploads:
+    st.write(f"**{len(uploads)}** file(s) selected.")
+
+run_clicked = st.button("🚀 Find Promos", type="primary", disabled=not uploads)
+
+if run_clicked:
+    if not api_key:
+        st.error(f"Please paste a {provider} API key in the sidebar.")
+        st.stop()
+    try:
+        files = [(u.name, u.getvalue()) for u in uploads]
+        parsed = parse_uploaded_files(files, show_title=show_title.strip() or "Uploaded Show")
+    except Exception as e:  # noqa: BLE001
+        st.error(f"Could not parse uploads: {e}")
+        st.stop()
+
+    st.success(
+        f"Parsed {parsed['episode_count']} episodes · {parsed['total_blocks']} blocks · "
+        f"{len(parsed['all_unique_speakers'])} speaker tags · {parsed['total_duration_sec']/60:.1f} min"
+    )
+
+    digest = hashlib.sha256(
+        json.dumps([(n, hashlib.sha256(b).hexdigest()) for n, b in files]).encode()
+    ).hexdigest()[:10]
+    out_dir = WEB_OUT_ROOT / digest
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    client = LLMClient(
+        provider=provider,
+        model=model.strip() or None,
+        api_key=api_key,
+        cache_dir=out_dir / ".cache",
+        min_delay_sec=delay,
+    )
+    if not use_cache:
+        orig_call = client.call_json
+        client.call_json = lambda stage, s, u, use_cache=True: orig_call(stage, s, u, use_cache=False)
+
+    bar = st.progress(0.0, text="Starting...")
+
+    def _progress(frac: float, msg: str) -> None:
+        bar.progress(min(1.0, max(0.0, frac)), text=msg)
+
+    try:
+        result = run_pipeline(parsed, client, out_dir, progress=_progress)
+    except Exception as e:  # noqa: BLE001
+        st.error(f"Pipeline failed: {e}")
+        st.info("Cached progress is kept — fix the issue (key, quota, delay) and click Find Promos again.")
+        st.stop()
+
+    st.session_state["result"] = {
+        "ranked": result["ranked"],
+        "audit": result["audit_log"],
+        "metrics": result["metrics"],
+        "paths": {k: str(v) for k, v in result["paths"].items()},
+    }
+
+# ---------------- Results ----------------
+res = st.session_state.get("result")
+if res:
+    ranked, audit, metrics, paths = res["ranked"], res["audit"], res["metrics"], res["paths"]
+
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Ranked promos", len(ranked))
+    c2.metric("Rejected by validator", audit["total_rejected"])
+    c3.metric("API calls (cache hits)", f"{metrics['api_calls']} ({metrics['cache_hits']})")
+    c4.metric("Est. cost", f"${metrics['estimated_cost_usd']:.4f}")
+
+    d1, d2, d3 = st.columns(3)
+    for col, key, label, mime in (
+        (d1, "promos_json", "⬇️ promos.json", "application/json"),
+        (d2, "promos_csv", "⬇️ promos.csv", "text/csv"),
+        (d3, "report_html", "⬇️ report.html", "text/html"),
+    ):
+        col.download_button(label, data=Path(paths[key]).read_bytes(), file_name=Path(paths[key]).name, mime=mime)
+
+    tab_cards, tab_report, tab_audit = st.tabs(["🏆 Ranked promos", "📄 Full HTML report", "🛡️ Validation audit"])
+
+    with tab_cards:
+        if not ranked:
+            st.warning("No promos passed validation. Check the audit tab for rejection reasons.")
+        for p in ranked:
+            sc = p["scores"]
+            with st.expander(
+                f"#{p['rank']} · {p['final_score']}/10 · {p['total_duration_sec']:.1f}s · "
+                f"{p['arc_label']} · {p['posting_tier']}",
+                expanded=p["rank"] <= 3,
+            ):
+                st.markdown(f"**Playback order:** " + " → ".join(
+                    f"Ep {s['episode']} ({s['start_ts']}–{s['end_ts']}, {s['duration_sec']:.1f}s)" for s in p["segments"]
+                ))
+                st.markdown(f"**Hook (0–3s):** {p['hook']}")
+                st.markdown(f"**Cliffhanger:** {p['cliffhanger']}")
+                st.markdown(f"**Why it works:** {p['why_it_works']}")
+                st.markdown(f"**Honest critique:** {p['honest_critique']}")
+                m1, m2, m3, m4 = st.columns(4)
+                m1.metric("Hook", sc["hook_3s"])
+                m2.metric("Cliffhanger", sc["cliffhanger"])
+                m3.metric("Clarity", sc["standalone_clarity"])
+                m4.metric("Spoiler risk", p["spoiler_risk"])
+                if p["quality_flags"]:
+                    st.caption("Flags: " + ", ".join(p["quality_flags"]))
+                with st.expander("Clip script"):
+                    st.code(p["blind_clip_script"], language=None)
+
+    with tab_report:
+        components.html(Path(paths["report_html"]).read_text(encoding="utf-8"), height=900, scrolling=True)
+
+    with tab_audit:
+        st.json(audit["rejection_counts_by_rule"])
+        st.dataframe(
+            [
+                {"id": r["candidate_id"], "rule": r["rule_violated"], "detail": r["detail"]}
+                for r in audit["rejected_candidates"]
+            ],
+            use_container_width=True,
+        )

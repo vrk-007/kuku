@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+outputs/.cache/
+outputs/_dryrun/
+outputs/_dryrun_web_test.py
+outputs/parsed_episodes.json
+outputs_web/
+
+# Confidentiality: never commit Kuku's screenplay input pack publicly
+I Married a Broken Soldier. He was a Duke/

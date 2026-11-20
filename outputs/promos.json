@@ -1,0 +1,435 @@
+{
+  "show_title": "I Married a Broken Soldier. He was a Duke",
+  "episode_count": 5,
+  "total_promos_ranked": 6,
+  "run_metrics": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "api_calls": 4,
+    "cache_hits": 4,
+    "input_tokens": 41637,
+    "output_tokens": 5182,
+    "stages": {
+      "show_bible": {
+        "api_calls": 0,
+        "cache_hits": 1,
+        "input_tokens": 1399,
+        "output_tokens": 753
+      },
+      "ep_01": {
+        "api_calls": 0,
+        "cache_hits": 1,
+        "input_tokens": 5838,
+        "output_tokens": 379
+      },
+      "ep_02": {
+        "api_calls": 0,
+        "cache_hits": 1,
+        "input_tokens": 5030,
+        "output_tokens": 642
+      },
+      "ep_03": {
+        "api_calls": 0,
+        "cache_hits": 1,
+        "input_tokens": 7047,
+        "output_tokens": 442
+      },
+      "ep_04": {
+        "api_calls": 1,
+        "cache_hits": 0,
+        "input_tokens": 6344,
+        "output_tokens": 393
+      },
+      "ep_05": {
+        "api_calls": 1,
+        "cache_hits": 0,
+        "input_tokens": 4495,
+        "output_tokens": 464
+      },
+      "cross_episode_stitcher": {
+        "api_calls": 1,
+        "cache_hits": 0,
+        "input_tokens": 2646,
+        "output_tokens": 1272
+      },
+      "blind_judge_b01": {
+        "api_calls": 1,
+        "cache_hits": 0,
+        "input_tokens": 8838,
+        "output_tokens": 837
+      }
+    },
+    "cost_usd": 0.00935475,
+    "estimated_cost_usd": 0.0094,
+    "elapsed_sec": 24.8
+  },
+  "promos": [
+    {
+      "candidate_id": "C003",
+      "candidate_type": "continuous",
+      "arc_label": "juliana_revenge_speech",
+      "episodes": [
+        2
+      ],
+      "total_duration_sec": 35.8,
+      "has_active_3s_opener": true,
+      "auto_adjusted": false,
+      "adjustment_note": null,
+      "segments": [
+        {
+          "episode": 2,
+          "role": "main",
+          "start_block_id": "B054",
+          "end_block_id": "B074",
+          "start_ts": "01:14.20",
+          "end_ts": "01:50.00",
+          "start_sec": 74.2,
+          "end_sec": 110.0,
+          "duration_sec": 35.8
+        }
+      ],
+      "hook": "Juliana's tearful expression transforms into a steely, defiant smile.",
+      "cliffhanger": "Juliana declares she leaves the chapel with her head held high while Gerald stands stunned and speechless.",
+      "why_it_works_draft": "Delivers an immensely satisfying emotional reversal where the humiliated heroine seizes total control of the room with an empowering speech.",
+      "spoiler_risk": "none",
+      "spoiler_reason": "None",
+      "blind_clip_script": "[B054 01:14.20-01:16.50] CAMERA: Direct close-up on Juliana's face as a steely, defiant smile emerges through her pain.\n[B055 01:14.40-01:16.40] DIALOGUE | LADY JULIANA [Bitter, Defiant]: \"Dignity?\"\n[B056 01:16.50-01:19.00] CAMERA: Full shot of Juliana standing tall, her posture completely transforming into regal composure before the seated guests.\n[B057 01:16.50-01:19.00] DIALOGUE | LADY JULIANA [Clear, Accusing]: \"You abandoned a woman who trusted you...\" [SENT_GRP:3]\n[B058 01:19.00-01:21.80] CAMERA: Medium profile close-up on Gerald's hardening jawline, Clarissa blurred in the background.\n[B059 01:19.20-01:22.50] DIALOGUE | LADY JULIANA (Off-screen) [Sharp, Piercing]: \"...because another woman promised you greater beauty and wealth.\" [SENT_GRP:3]\n[B060 01:21.80-01:22.80] CAMERA: Closer angle on Gerald's uneasy expression as Juliana's voice commands the room.\n[B061 01:22.80-01:26.70] CAMERA: Medium wide shot framing Juliana confronting Gerald from the foot of the altar stairs.\n[B062 01:23.00-01:26.50] DIALOGUE | LADY JULIANA [Steely, Resolute]: \"Do not mistake my heartbreak for your victory, Gerald.\"\n[B063 01:26.70-01:30.80] CAMERA: Medium close-up push-in on Juliana, her blue eyes shining with fierce conviction.\n[B064 01:26.80-01:33.00] DIALOGUE | LADY JULIANA [Powerful, Unyielding]: \"You wanted this entire chapel to believe that I was not worthy of you. But you have shown them something far more valuable.\"\n[B065 01:30.80-01:33.20] CAMERA: Medium profile on Juliana looking up at Gerald, holding the entire hall spellbound.\n[B066 01:33.20-01:36.80] CAMERA: Close-up on Juliana's face, calm, dignified, and unwavering.\n[B067 01:33.40-01:36.60] DIALOGUE | LADY JULIANA [Decisive, Scathing]: \"You have shown them exactly what your word is worth.\"\n[B068 01:36.80-01:38.20] CAMERA: Medium shot on Gerald standing frozen on the altar steps, stunned and speechless under her public rebuke.\n[B069 01:38.20-01:42.80] CAMERA: Low-angle wide shot of the grand cathedral nave, framing Juliana in pristine white at the center of the vaulted aisle.\n[B070 01:38.20-01:42.80] ACTION: Juliana lifts her chin high, commanding the space with unassailable dignity.\n[B071 01:38.50-01:42.40] DIALOGUE | LADY JULIANA [Resolute, Proud]: \"I may leave this chapel without a husband...\" [SENT_GRP:4]\n[B072 01:42.80-01:50.00] CAMERA: Dramatic medium close-up holding steadily on Juliana's radiant, proud face as she delivers her final proclamation.\n[B073 01:43.00-01:47.40] DIALOGUE | LADY JULIANA [Defiant, Triumphant in Spirit]: \"...but I will not leave it believing I was the one who should be ashamed.\" [SENT_GRP:4]\n[B074 01:47.40-01:50.00] ACTION: Juliana breathes with steady resolve, holding her head high as the solemn orchestral score swells into the final beat.",
+      "scores": {
+        "hook_3s": 7.0,
+        "cliffhanger": 7.5,
+        "standalone_clarity": 8.0
+      },
+      "why_it_works": "The protagonist's sudden shift from victimhood to fierce, articulate defiance makes for a satisfying emotional reversal.",
+      "quality_flags": [],
+      "honest_critique": "The hook relies on a single shouted word rather than physical action, which may not stop hard scrolling immediately.",
+      "final_score": 7.86,
+      "score_breakdown": {
+        "weighted_base": 7.46,
+        "cold_audience_bonus": 0.4,
+        "spoiler_penalty": 0.0,
+        "stitch_bonus": 0.0,
+        "flag_penalty": 0,
+        "opener_penalty": 0.0
+      },
+      "diversity_deferred": false,
+      "rank": 1,
+      "posting_tier": "Tier 1: Post First (Cold Traffic)"
+    },
+    {
+      "candidate_id": "C006",
+      "candidate_type": "continuous",
+      "arc_label": "disowned_and_defended",
+      "episodes": [
+        5
+      ],
+      "total_duration_sec": 51.5,
+      "has_active_3s_opener": true,
+      "auto_adjusted": false,
+      "adjustment_note": null,
+      "segments": [
+        {
+          "episode": 5,
+          "role": "main",
+          "start_block_id": "B031",
+          "end_block_id": "B060",
+          "start_ts": "00:54.00",
+          "end_ts": "01:45.50",
+          "start_sec": 54.0,
+          "end_sec": 105.5,
+          "duration_sec": 51.5
+        }
+      ],
+      "hook": "Lady Ashcroft violently rips Juliana's treasured mother's ledger out of her hands and flings it into the mud.",
+      "cliffhanger": "The mysterious scarred husband gives Gerald a lethal, chilling warning before walking away with Juliana.",
+      "why_it_works_draft": "Combines raw public humiliation and betrayal by family with an instant badass protective power move by the new husband.",
+      "spoiler_risk": "medium",
+      "spoiler_reason": "Shows Juliana being formally disowned and stripped of her inheritance.",
+      "blind_clip_script": "[B031 00:54.00-00:57.80] CAMERA: Close-up on the ledger as Lady Ashcroft violently wrenches it out of Juliana's grip.\n[B032 00:54.50-00:57.50] ACTION: Lady Ashcroft snatches the heavy book away and flings it disdainfully into the rain-soaked courtyard.\n[B033 00:55.50-00:56.80] DIALOGUE | JULIANA [Screaming, Desperate]: \"Barbara, don't!\"\n[B034 00:57.00-00:58.20] SOUND FX: A heavy wet slap as the leather-bound book crashes into the puddle-slicked stone pavement.\n[B035 00:57.80-01:03.00] CAMERA: Medium shot of Clarissa and Gerald standing together on the cathedral steps. Clarissa clasps a gloved hand to her mouth in mock shock before bursting into gleeful laughter.\n[B036 00:59.00-01:02.50] DIALOGUE | CLARISSA [Gleeful, Mocking]: \"Even your mother's precious legacy has been cast into the dirt!\"\n[B037 01:02.40-01:04.60] DIALOGUE | GERALD [Smug, Cruel]: \"Perhaps that is where it belongs.\"\n[B038 01:03.00-01:06.50] CAMERA: Close-up of Juliana looking down at the ground, tears streaming down her pale cheeks.\n[B039 01:05.50-01:08.50] ACTION: Juliana drops to her knees onto the wet courtyard pavement, oblivious to the dirt soaking through her white bridal gown.\n[B040 01:06.50-01:09.00] CAMERA: Low-angle close-up of Juliana's trembling hand reaching toward the leather ledger resting in the puddle.\n[B041 01:09.00-01:12.50] CAMERA: Wide shot of Juliana kneeling on the damp ground as the tall Mysterious Bearded Man strides purposefully into frame toward her.\n[B042 01:10.50-01:14.50] ACTION: The Mysterious Bearded Man bends his knees and kneels down beside Juliana, extending his scarred hand to retrieve the fallen ledger.\n[B043 01:14.50-01:16.00] CAMERA: Close-up of his large, weathered hands gently lifting the wet, embossed leather book from the ground.\n[B044 01:16.00-01:20.00] CAMERA: Medium two-shot as he holds out the retrieved ledger and places it into Juliana's trembling hands.\n[B045 01:17.80-01:19.00] DIALOGUE | MYSTERIOUS BEARDED MAN [Low, Gentle]: \"Here you go.\"\n[B046 01:20.00-01:25.50] CAMERA: Close-up of the Mysterious Bearded Man looking warmly down at Juliana, his rugged face full of quiet sincerity.\n[B047 01:20.50-01:22.00] DIALOGUE | JULIANA [Choked, Weeping]: \"They destroyed it.\"\n[B048 01:22.50-01:25.40] DIALOGUE | MYSTERIOUS BEARDED MAN [Calm, Grounded]: \"They dirtied it. That is not the same thing.\"\n[B049 01:25.50-01:31.00] CAMERA: Medium two-shot of Juliana pressing the soiled book tightly against her chest, weeping softly.\n[B050 01:26.50-01:27.80] DIALOGUE | JULIANA [Broken]: \"It was my mother's.\"\n[B051 01:27.90-01:29.00] DIALOGUE | MYSTERIOUS BEARDED MAN [Gentle, Protective]: \"Then keep it.\"\n[B052 01:28.50-01:31.00] ACTION: The Mysterious Bearded Man reaches out with both hands, clasping his strong hands tenderly over hers and the book.\n[B053 01:29.40-01:31.00] DIALOGUE | MYSTERIOUS BEARDED MAN [Firm, Comforting]: \"Let them keep everything else.\"\n[B054 01:31.00-01:36.50] CAMERA: Low-angle shot of Gerald standing high on the stone steps, grinning arrogantly as he points an accusatory finger down at them.\n[B055 01:31.50-01:32.80] DIALOGUE | GERALD [Mocking, Arrogant]: \"Look at you.\"\n[B056 01:33.00-01:36.50] DIALOGUE | GERALD [Scornful, Spiteful]: \"A noblewoman reduced to a beggar's wife!\"\n[B057 01:36.50-01:41.50] CAMERA: Over-the-shoulder shot behind the Mysterious Bearded Man looking up toward Gerald on the stairs. Gerald's arrogant grin slowly wavers.\n[B058 01:38.00-01:40.80] DIALOGUE | MYSTERIOUS BEARDED MAN [Low, Lethally Cold]: \"Choose your next words carefully.\"\n[B059 01:41.50-01:45.50] CAMERA: Extreme close-up of the Mysterious Bearded Man's scarred hand completely covering and protecting Juliana's hands where they clasp the book.\n[B060 01:44.20-01:45.20] DIALOGUE | MYSTERIOUS BEARDED MAN [Soft, Reassuring]: \"Come.\"",
+      "scores": {
+        "hook_3s": 8.0,
+        "cliffhanger": 6.5,
+        "standalone_clarity": 7.0
+      },
+      "why_it_works": "Physical destruction of a mother's keepsake paired with a mysterious protector stepping in provides strong genre-pleasing tropes.",
+      "quality_flags": [
+        "weak_ending"
+      ],
+      "honest_critique": "The ending fizzles out with a soft line instead of an explosive narrative hook.",
+      "final_score": 6.42,
+      "score_breakdown": {
+        "weighted_base": 7.22,
+        "cold_audience_bonus": 0.4,
+        "spoiler_penalty": -0.7,
+        "stitch_bonus": 0.0,
+        "flag_penalty": -0.5,
+        "opener_penalty": 0.0
+      },
+      "diversity_deferred": false,
+      "rank": 2,
+      "posting_tier": "Tier 2: Scale / A-B Test"
+    },
+    {
+      "candidate_id": "C005",
+      "candidate_type": "continuous",
+      "arc_label": "wedding_defiance",
+      "episodes": [
+        4
+      ],
+      "total_duration_sec": 41.4,
+      "has_active_3s_opener": true,
+      "auto_adjusted": false,
+      "adjustment_note": null,
+      "segments": [
+        {
+          "episode": 4,
+          "role": "cliffhanger",
+          "start_block_id": "B081",
+          "end_block_id": "B110",
+          "start_ts": "01:50.00",
+          "end_ts": "02:31.40",
+          "start_sec": 110.0,
+          "end_sec": 151.4,
+          "duration_sec": 41.4
+        }
+      ],
+      "hook": "The priest pronounces Juliana and the scarred warrior husband and wife as dramatic music swells.",
+      "cliffhanger": "Juliana and her new husband walk hand-in-hand through the massive oak doors into the bright sunlight, turning their backs on her disowning family.",
+      "why_it_works_draft": "Delivers ultimate emotional payoff, public humiliation of toxic exes, and a triumphant walkout into freedom.",
+      "spoiler_risk": "medium",
+      "spoiler_reason": "Shows Juliana being formally disowned and married to the stranger.",
+      "blind_clip_script": "[B081 01:50.00-01:52.80] CAMERA: Medium three-shot with the Priest standing between them, raising both hands in blessing over their joined hands.\n[B082 01:50.00-01:53.00] DIALOGUE | THE PRIEST [Ceremonial]: \"By the authority entrusted to me, I now pronounce you...\" [SENT_GRP:1]\n[B083 01:52.80-01:54.80] CAMERA: High wide establishing shot looking down from the ceiling vaults of the cathedral onto the altar.\n[B084 01:53.00-01:54.80] DIALOGUE | THE PRIEST [Off-Screen, Booming]: \"...husband and wife!\" [SENT_GRP:1]\n[B085 01:54.00-01:55.20] SOUND FX: Dramatic musical chord swelling.\n[B086 01:54.80-01:56.80] CAMERA: Medium close-up of Gerald lunging forward, pointing an enraged finger.\n[B087 01:55.00-01:56.80] DIALOGUE | GERALD [Furious, Shouting]: \"You have thrown yourself away!\"\n[B088 01:56.80-01:59.00] CAMERA: Tight close-up of Gerald, face contorted in rage.\n[B089 01:57.00-01:59.00] DIALOGUE | GERALD [Livid]: \"For a penniless nobody!\"\n[B090 01:59.00-02:02.80] CAMERA: Medium two-shot of Juliana standing tall before Gerald in the chapel aisle, her husband standing guard behind her.\n[B091 02:00.50-02:02.80] DIALOGUE | JULIANA [Calm, Cutting]: \"I would rather choose my own life...\" [SENT_GRP:2]\n[B092 02:02.80-02:05.80] CAMERA: Close-up of Juliana, her jaw set with unshakable pride.\n[B093 02:03.00-02:05.50] DIALOGUE | JULIANA [Firm, Final]: \"...than spend another moment begging for yours.\" [SENT_GRP:2]\n[B094 02:05.80-02:07.40] CAMERA: Tight close-up of Gerald, eyes wide with speechless shock and wounded pride.\n[B095 02:06.00-02:07.40] ACTION: Gerald recoils slightly, mouth agape.\n[B096 02:07.40-02:11.50] CAMERA: Wide shot of Lady Ashcroft rising abruptly from the front pew, pointing an accusatory hand toward the doors.\n[B097 02:07.50-02:11.50] DIALOGUE | LADY ASHCROFT [Imperious, Shouting]: \"Do not bring this man anywhere near Ashcroft Manor!\"\n[B098 02:11.50-02:14.80] CAMERA: Tight close-up of Lady Ashcroft, eyes blazing with cold malice.\n[B099 02:12.00-02:14.50] DIALOGUE | LADY ASHCROFT [Venomous]: \"You are disowned!\"\n[B100 02:14.80-02:16.00] CAMERA: Medium shot of Lord Ashcroft bowing his head deeply over his cane in shame.\n[B101 02:16.00-02:18.80] CAMERA: Close-up of Juliana. Tears brim in her eyes at the formal rejection, but she does not break.\n[B102 02:18.80-02:20.80] CAMERA: Medium two-shot as the Mysterious Bearded Man turns gently to Juliana, reaching his hand out once more.\n[B103 02:19.50-02:20.80] DIALOGUE | MYSTERIOUS BEARDED MAN [Soft, Protective]: \"Come, Lady Juliana.\"\n[B104 02:20.80-02:22.80] CAMERA: Close-up of Juliana placing her hand securely into his, gripping his scarred hand.\n[B105 02:22.80-02:24.80] CAMERA: Wide tracking shot behind Juliana and the warrior as they begin walking down the central aisle toward the chapel doors.\n[B106 02:24.80-02:26.50] CAMERA: Medium three-shot of Gerald, Clarissa, and Lady Ashcroft watching in stunned silence and disbelief.\n[B107 02:25.00-02:26.50] ACTION: Clarissa gapes in shock while Lady Ashcroft exhales in exasperation.\n[B108 02:26.50-02:31.40] CAMERA: Wide shot from the back of the chapel as the massive oak doors swing wide open, revealing bright daylight and the courtyard outside.\n[B109 02:27.00-02:29.00] SOUND FX: Heavy oak doors creaking open, followed by a triumphant musical swell fading out into silence.\n[B110 02:27.50-02:31.40] ACTION: Juliana and the Mysterious Bearded Man walk hand-in-hand through the towering doors into the sunlight together, turning their backs on the ruined wedding as the screen fades out.",
+      "scores": {
+        "hook_3s": 6.5,
+        "cliffhanger": 8.0,
+        "standalone_clarity": 7.5
+      },
+      "why_it_works": "A brand new wedding twist followed by total disownment creates high-stakes drama that leaves viewers wanting to see what happens next.",
+      "quality_flags": [
+        "needs_context"
+      ],
+      "honest_critique": "Jumping straight into a second wedding without knowing who the new groom is causes initial confusion for a cold viewer.",
+      "final_score": 6.38,
+      "score_breakdown": {
+        "weighted_base": 7.28,
+        "cold_audience_bonus": 0.4,
+        "spoiler_penalty": -0.7,
+        "stitch_bonus": 0.0,
+        "flag_penalty": -0.6,
+        "opener_penalty": 0.0
+      },
+      "diversity_deferred": false,
+      "rank": 3,
+      "posting_tier": "Tier 2: Scale / A-B Test"
+    },
+    {
+      "candidate_id": "C002",
+      "candidate_type": "continuous",
+      "arc_label": "altar_betrayal_and_defiance",
+      "episodes": [
+        2
+      ],
+      "total_duration_sec": 56.7,
+      "has_active_3s_opener": true,
+      "auto_adjusted": false,
+      "adjustment_note": null,
+      "segments": [
+        {
+          "episode": 2,
+          "role": "cold_open_hook",
+          "start_block_id": "B001",
+          "end_block_id": "B038",
+          "start_ts": "00:00.00",
+          "end_ts": "00:56.70",
+          "start_sec": 0.0,
+          "end_sec": 56.7,
+          "duration_sec": 56.7
+        }
+      ],
+      "hook": "Gerald callously abandons Juliana at the altar in front of the entire aristocratic congregation.",
+      "cliffhanger": "Clarissa mocks Juliana as a kitchen maid who wandered into the wrong wedding.",
+      "why_it_works_draft": "Instantly triggers outrage from the viewer against the arrogant groom and cruel sister, setting up an explosive revenge arc.",
+      "spoiler_risk": "none",
+      "spoiler_reason": "None",
+      "blind_clip_script": "[B001 00:00.00-00:02.80] CAMERA: Medium low-angle shot on Gerald at the altar steps, looking down dismissively, while Clarissa in her shimmering gold gown stands behind him gloating.\n[B002 00:00.00-00:02.50] DIALOGUE | THE FORMER GROOM [Cold, Callous]: \"I cannot marry you, Juliana.\"\n[B003 00:02.80-00:04.60] CAMERA: Medium close-up on Juliana trembling in disbelief, her hands clasped tightly to her chest.\n[B004 00:02.80-00:04.60] ACTION: Juliana gasps softly in heartbreak, her eyes wide and brimming with tears.\n[B005 00:04.60-00:06.60] CAMERA: Medium shot returning to Gerald, sneering down at Juliana.\n[B006 00:04.70-00:06.50] DIALOGUE | THE FORMER GROOM [Cruel, Derisive]: \"You are far too plain...\" [SENT_GRP:1]\n[B007 00:06.60-00:09.50] CAMERA: Close-up on Juliana's tear-streaked face, crushed under his biting words.\n[B008 00:06.80-00:09.50] DIALOGUE | THE FORMER GROOM (Off-screen) [Dismissive]: \"...far too silent...\" [SENT_GRP:1]\n[B009 00:09.50-00:12.00] CAMERA: Medium shot on Gerald turning slightly toward Clarissa as she smiles admiringly at him.\n[B010 00:09.60-00:12.00] DIALOGUE | THE FORMER GROOM [Arrogant, Conceited]: \"...and completely beneath the future I deserve.\" [SENT_GRP:1]\n[B011 00:12.00-00:15.80] CAMERA: Wide shot down the aisle as Juliana takes an agonizing step forward toward the altar, extending a trembling hand.\n[B012 00:12.40-00:15.50] DIALOGUE | LADY JULIANA [Desperate, Pleading]: \"Gerald... Look at me.\"\n[B013 00:15.80-00:18.00] CAMERA: Close-up on Gerald's cold, merciless face staring ahead unblinkingly.\n[B014 00:18.00-00:20.70] CAMERA: Tight insert on Juliana's hand clutching the heirloom amethyst pendant resting against her gown.\n[B015 00:18.20-00:20.60] DIALOGUE | LADY JULIANA [Trembling, Betrayed]: \"You gave me your word before both our families.\"\n[B016 00:20.70-00:23.80] CAMERA: Medium two-shot of Gerald and Clarissa standing side by side before the priest.\n[B017 00:20.90-00:23.70] DIALOGUE | THE FORMER GROOM [Indifferent, Unapologetic]: \"Promises change when a better choice appears.\"\n[B018 00:23.80-00:27.60] CAMERA: Medium close-up on Juliana clutching her chest, her voice quivering with disbelief.\n[B019 00:24.00-00:27.40] DIALOGUE | LADY JULIANA [Shattered, Disbelieving]: \"A better choice? Is that what she is?\"\n[B020 00:27.60-00:30.60] CAMERA: Wide shot from behind Juliana looking up the altar stairs at Gerald with Clarissa linked to his arm.\n[B021 00:27.80-00:30.50] DIALOGUE | THE FORMER GROOM [Resolute, Harsh]: \"She is what I should have chosen from the beginning.\"\n[B022 00:30.60-00:32.40] CAMERA: Medium shot of Juliana's father seated prominently in the family pew, clutching his gold-topped cane.\n[B023 00:30.90-00:32.40] DIALOGUE | LADY JULIANA (Off-screen) [Vulnerable, Begging]: \"Father...\"\n[B024 00:32.40-00:34.20] CAMERA: Close-up of the father's stern, unyielding face.\n[B025 00:34.20-00:37.20] CAMERA: Medium shot of Juliana turning toward her father in the pews, imploring him.\n[B026 00:34.30-00:37.10] DIALOGUE | LADY JULIANA [Choked with Tears]: \"Surely you will not let him humiliate me like this?\"\n[B027 00:37.20-00:42.50] CAMERA: Medium shot tracking in on Juliana's father as he leans firmly upon his cane, looking down coldly.\n[B028 00:37.50-00:42.30] DIALOGUE | BLOND NOBLEMAN [Stern, Cold]: \"Gerald has made his choice. Accept it, Juliana.\"\n[B029 00:42.50-00:44.80] CAMERA: Close-up on the father's hardening eyes, entirely unsympathetic.\n[B030 00:42.50-00:44.70] DIALOGUE | BLOND NOBLEMAN [Severely, Harsh]: \"Do not disgrace us further.\"\n[B031 00:44.80-00:47.60] CAMERA: Extreme close-up on Juliana's tear-drenched eyes as the sting of her father's rejection lands.\n[B032 00:45.30-00:47.40] DIALOGUE | LADY JULIANA [Whispering, Crushed]: \"You won't even look at me.\"\n[B033 00:47.60-00:51.50] CAMERA: Medium shot on Clarissa, beaming smugly as she clings to Gerald's arm.\n[B034 00:47.80-00:51.40] DIALOGUE | LADY IN GOLD GOWN [Mocking, Spiteful]: \"Why are you surprised, sister? Look at you.\"\n[B035 00:51.50-00:53.40] CAMERA: Tight insert on Clarissa's gloved fingers contemptuously pinching the satin folds of Juliana's gown.\n[B036 00:51.60-00:53.20] DIALOGUE | LADY IN GOLD GOWN (Off-screen) [Scornful]: \"That plain, old-fashioned gown.\"\n[B037 00:53.40-00:56.70] CAMERA: Medium shot of Clarissa smiling radiantly, condescendingly gesturing at Juliana.\n[B038 00:53.50-00:56.70] DIALOGUE | LADY IN GOLD GOWN [Taunting, Giggling]: \"You look like a kitchen maid who wandered into the wrong wedding.\"",
+      "scores": {
+        "hook_3s": 7.5,
+        "cliffhanger": 3.0,
+        "standalone_clarity": 8.0
+      },
+      "why_it_works": "The immediate humiliation at the altar creates an instantly gripping dynamic of cruelty and betrayal.",
+      "quality_flags": [
+        "weak_ending"
+      ],
+      "honest_critique": "It drags on through multiple repetitive insults without reaching a true narrative peak or cliffhanger.",
+      "final_score": 6.11,
+      "score_breakdown": {
+        "weighted_base": 6.21,
+        "cold_audience_bonus": 0.4,
+        "spoiler_penalty": 0.0,
+        "stitch_bonus": 0.0,
+        "flag_penalty": -0.5,
+        "opener_penalty": 0.0
+      },
+      "diversity_deferred": false,
+      "rank": 4,
+      "posting_tier": "Tier 1: Post First (Cold Traffic)"
+    },
+    {
+      "candidate_id": "C007",
+      "candidate_type": "cross_episode_stitched",
+      "arc_label": "the_altar_betrayal",
+      "episodes": [
+        3,
+        1,
+        2
+      ],
+      "total_duration_sec": 42.6,
+      "has_active_3s_opener": true,
+      "auto_adjusted": false,
+      "adjustment_note": null,
+      "segments": [
+        {
+          "episode": 3,
+          "role": "cold_open_hook",
+          "start_block_id": "B047",
+          "end_block_id": "B054",
+          "start_ts": "00:58.30",
+          "end_ts": "01:04.50",
+          "start_sec": 58.3,
+          "end_sec": 64.5,
+          "duration_sec": 6.2
+        },
+        {
+          "episode": 1,
+          "role": "setup",
+          "start_block_id": "B087",
+          "end_block_id": "B095",
+          "start_ts": "02:04.20",
+          "end_ts": "02:18.00",
+          "start_sec": 124.2,
+          "end_sec": 138.0,
+          "duration_sec": 13.8
+        },
+        {
+          "episode": 2,
+          "role": "cliffhanger",
+          "start_block_id": "B054",
+          "end_block_id": "B067",
+          "start_ts": "01:14.20",
+          "end_ts": "01:36.80",
+          "start_sec": 74.2,
+          "end_sec": 96.8,
+          "duration_sec": 22.6
+        }
+      ],
+      "hook": "Guards brutally drag the weeping bride out of the cathedral on her own family's orders!",
+      "cliffhanger": "Juliana turns her absolute heartbreak into a fierce, public dressing down of her worthless ex-fiancé.",
+      "why_it_works_draft": "Starting with violent physical ejection hooks the viewer instantly before flashing back to the cold verbal betrayal.",
+      "spoiler_risk": "low",
+      "spoiler_reason": "None",
+      "blind_clip_script": "=== CLIP SEGMENT 1 (6.2s) ===\n[B047 00:58.30-01:00.00] DIALOGUE | NOBLE MATRIARCH [Shouting, Imperious]: \"Guards! Remove her!\"\n[B048 01:00.00-01:02.00] CAMERA: Medium shot as two royal guards in red uniforms and bearskin caps step in behind Juliana and seize her arms.\n[B049 01:00.50-01:02.50] ACTION: The guards forcefully grab Juliana by both shoulders and drag her backwards.\n[B050 01:00.60-01:02.30] DIALOGUE | LADY JULIANA [Screaming, Resisting]: \"Let me go!\"\n[B051 01:02.00-01:03.20] CAMERA: Close-up of Juliana's hand frantically grabbing the wooden rim of a pew, knuckles white with strain.\n[B052 01:02.40-01:03.50] DIALOGUE | LADY JULIANA [Desperate, Begging]: \"Please! Someone!\"\n[B053 01:03.00-01:04.50] ACTION: The guards tear her grip away from the pew.\n[B054 01:03.00-01:04.50] SOUND FX: Muffled scuffle, rustle of heavy silk and frantic gasps echoing off cathedral stone.\n=== CLIP SEGMENT 2 (13.8s) ===\n[B087 02:04.20-02:07.50] DIALOGUE | THE FORMER GROOM [Arrogant, Dismissive]: \"I cannot marry a woman of such plainness and low value...\" [SENT_GRP:1]\n[B088 02:08.50-02:11.30] CAMERA: Close-up on Clarissa's radiant, conceited smile basking in Gerald's words.\n[B089 02:08.50-02:11.20] DIALOGUE | THE FORMER GROOM [Reverent toward Clarissa]: \"...when Clarissa is the true jewel of the county.\" [SENT_GRP:1]\n[B090 02:11.30-02:13.80] ACTION: Juliana's hand clenches fiercely into the folds of her mother's silk bridal gown, knuckles whitening with suppressed fury.\n[B091 02:11.30-02:13.80] CAMERA: Tight insert on Juliana's white-knuckled hand clutching the gown fabric.\n[B092 02:13.80-02:17.00] CAMERA: Push-in close-up on Juliana's tearful face. Her trembling mouth straightens, her tear-filled blue eyes hardening from sheer devastation into cold, resolute defiance.\n[B093 02:13.80-02:17.00] ACTION: Juliana breathes through the agony, refusing to break down further in front of the congregation.\n[B094 02:15.00-02:17.50] SOUND FX: Solemn low-pitched string drone swells to an ominous cliffhanger peak.\n[B095 02:17.00-02:18.00] CAMERA: Cut to black.\n=== CLIP SEGMENT 3 (22.6s) ===\n[B054 01:14.20-01:16.50] CAMERA: Direct close-up on Juliana's face as a steely, defiant smile emerges through her pain.\n[B055 01:14.40-01:16.40] DIALOGUE | LADY JULIANA [Bitter, Defiant]: \"Dignity?\"\n[B056 01:16.50-01:19.00] CAMERA: Full shot of Juliana standing tall, her posture completely transforming into regal composure before the seated guests.\n[B057 01:16.50-01:19.00] DIALOGUE | LADY JULIANA [Clear, Accusing]: \"You abandoned a woman who trusted you...\" [SENT_GRP:3]\n[B058 01:19.00-01:21.80] CAMERA: Medium profile close-up on Gerald's hardening jawline, Clarissa blurred in the background.\n[B059 01:19.20-01:22.50] DIALOGUE | LADY JULIANA (Off-screen) [Sharp, Piercing]: \"...because another woman promised you greater beauty and wealth.\" [SENT_GRP:3]\n[B060 01:21.80-01:22.80] CAMERA: Closer angle on Gerald's uneasy expression as Juliana's voice commands the room.\n[B061 01:22.80-01:26.70] CAMERA: Medium wide shot framing Juliana confronting Gerald from the foot of the altar stairs.\n[B062 01:23.00-01:26.50] DIALOGUE | LADY JULIANA [Steely, Resolute]: \"Do not mistake my heartbreak for your victory, Gerald.\"\n[B063 01:26.70-01:30.80] CAMERA: Medium close-up push-in on Juliana, her blue eyes shining with fierce conviction.\n[B064 01:26.80-01:33.00] DIALOGUE | LADY JULIANA [Powerful, Unyielding]: \"You wanted this entire chapel to believe that I was not worthy of you. But you have shown them something far more valuable.\"\n[B065 01:30.80-01:33.20] CAMERA: Medium profile on Juliana looking up at Gerald, holding the entire hall spellbound.\n[B066 01:33.20-01:36.80] CAMERA: Close-up on Juliana's face, calm, dignified, and unwavering.\n[B067 01:33.40-01:36.60] DIALOGUE | LADY JULIANA [Decisive, Scathing]: \"You have shown them exactly what your word is worth.\"",
+      "scores": {
+        "hook_3s": 5.0,
+        "cliffhanger": 8.5,
+        "standalone_clarity": 4.5
+      },
+      "why_it_works": "Stitching the emotional hardening right after the guard sequence builds a tense character arc that ends on a sharp beat.",
+      "quality_flags": [
+        "needs_context",
+        "weak_hook",
+        "abrupt_stitch"
+      ],
+      "honest_critique": "The stitched timeline is jarring, dropping cold viewers into a chaotic sequence without establishing who is commanding the guards.",
+      "final_score": 4.47,
+      "score_breakdown": {
+        "weighted_base": 5.97,
+        "cold_audience_bonus": 0.4,
+        "spoiler_penalty": -0.2,
+        "stitch_bonus": 0.0,
+        "flag_penalty": -1.7,
+        "opener_penalty": 0.0
+      },
+      "diversity_deferred": false,
+      "rank": 5,
+      "posting_tier": "Tier 2: Scale / A-B Test"
+    },
+    {
+      "candidate_id": "C009",
+      "candidate_type": "cross_episode_stitched",
+      "arc_label": "ultimate_revenge_arc",
+      "episodes": [
+        5,
+        3
+      ],
+      "total_duration_sec": 24.4,
+      "has_active_3s_opener": true,
+      "auto_adjusted": true,
+      "adjustment_note": "auto_snap_expand: 19.4s -> 24.4s",
+      "segments": [
+        {
+          "episode": 5,
+          "role": "cold_open_hook",
+          "start_block_id": "B057",
+          "end_block_id": "B061",
+          "start_ts": "01:36.50",
+          "end_ts": "01:50.50",
+          "start_sec": 96.5,
+          "end_sec": 110.5,
+          "duration_sec": 14.0
+        },
+        {
+          "episode": 3,
+          "role": "setup",
+          "start_block_id": "B047",
+          "end_block_id": "B054",
+          "start_ts": "00:58.30",
+          "end_ts": "01:04.50",
+          "start_sec": 58.3,
+          "end_sec": 64.5,
+          "duration_sec": 6.2
+        },
+        {
+          "episode": 5,
+          "role": "cliffhanger",
+          "start_block_id": "B031",
+          "end_block_id": "B034",
+          "start_ts": "00:54.00",
+          "end_ts": "00:58.20",
+          "start_sec": 54.0,
+          "end_sec": 58.2,
+          "duration_sec": 4.2
+        }
+      ],
+      "hook": "The formidable scarred husband delivers a lethally cold warning to the arrogant former groom.",
+      "cliffhanger": "The cruel step-mother violently hurls Juliana's precious family ledger into the muddy courtyard.",
+      "why_it_works_draft": "Blends intense physical confrontation with family malice to trigger maximum viewer indignation.",
+      "spoiler_risk": "medium",
+      "spoiler_reason": "Juliana is disowned and her mother's legacy is thrown into the dirt.",
+      "blind_clip_script": "=== CLIP SEGMENT 1 (14.0s) ===\n[B057 01:36.50-01:41.50] CAMERA: Over-the-shoulder shot behind the Mysterious Bearded Man looking up toward Gerald on the stairs. Gerald's arrogant grin slowly wavers.\n[B058 01:38.00-01:40.80] DIALOGUE | MYSTERIOUS BEARDED MAN [Low, Lethally Cold]: \"Choose your next words carefully.\"\n[B059 01:41.50-01:45.50] CAMERA: Extreme close-up of the Mysterious Bearded Man's scarred hand completely covering and protecting Juliana's hands where they clasp the book.\n[B060 01:44.20-01:45.20] DIALOGUE | MYSTERIOUS BEARDED MAN [Soft, Reassuring]: \"Come.\"\n[B061 01:45.50-01:50.50] CAMERA: High wide shot from above the courtyard archway. Juliana, holding her mother's book, and the Mysterious Bearded Man, holding her hand firmly, walk together down the wet cobblestone path and through the towering iron gates into the misty rain, leaving her former family behind as the screen fades out.\n=== CLIP SEGMENT 2 (6.2s) ===\n[B047 00:58.30-01:00.00] DIALOGUE | NOBLE MATRIARCH [Shouting, Imperious]: \"Guards! Remove her!\"\n[B048 01:00.00-01:02.00] CAMERA: Medium shot as two royal guards in red uniforms and bearskin caps step in behind Juliana and seize her arms.\n[B049 01:00.50-01:02.50] ACTION: The guards forcefully grab Juliana by both shoulders and drag her backwards.\n[B050 01:00.60-01:02.30] DIALOGUE | LADY JULIANA [Screaming, Resisting]: \"Let me go!\"\n[B051 01:02.00-01:03.20] CAMERA: Close-up of Juliana's hand frantically grabbing the wooden rim of a pew, knuckles white with strain.\n[B052 01:02.40-01:03.50] DIALOGUE | LADY JULIANA [Desperate, Begging]: \"Please! Someone!\"\n[B053 01:03.00-01:04.50] ACTION: The guards tear her grip away from the pew.\n[B054 01:03.00-01:04.50] SOUND FX: Muffled scuffle, rustle of heavy silk and frantic gasps echoing off cathedral stone.\n=== CLIP SEGMENT 3 (4.2s) ===\n[B031 00:54.00-00:57.80] CAMERA: Close-up on the ledger as Lady Ashcroft violently wrenches it out of Juliana's grip.\n[B032 00:54.50-00:57.50] ACTION: Lady Ashcroft snatches the heavy book away and flings it disdainfully into the rain-soaked courtyard.\n[B033 00:55.50-00:56.80] DIALOGUE | JULIANA [Screaming, Desperate]: \"Barbara, don't!\"\n[B034 00:57.00-00:58.20] SOUND FX: A heavy wet slap as the leather-bound book crashes into the puddle-slicked stone pavement.",
+      "scores": {
+        "hook_3s": 7.0,
+        "cliffhanger": 4.0,
+        "standalone_clarity": 4.0
+      },
+      "why_it_works": "Opening with a protective confrontation gives an immediate sense of an underdog finding a powerful ally.",
+      "quality_flags": [
+        "needs_context",
+        "weak_ending",
+        "abrupt_stitch"
+      ],
+      "honest_critique": "Chronologically scrambled and lacking context, the clip ends randomly on book-tossing rather than a cohesive story beat.",
+      "final_score": 3.24,
+      "score_breakdown": {
+        "weighted_base": 5.14,
+        "cold_audience_bonus": 0.4,
+        "spoiler_penalty": -0.7,
+        "stitch_bonus": 0.0,
+        "flag_penalty": -1.6,
+        "opener_penalty": 0.0
+      },
+      "diversity_deferred": false,
+      "rank": 6,
+      "posting_tier": "Tier 2: Scale / A-B Test"
+    }
+  ]
+}

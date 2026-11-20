@@ -1,0 +1,104 @@
+{
+  "total_raw_candidates": 10,
+  "total_valid": 6,
+  "total_rejected": 4,
+  "total_auto_adjusted": 1,
+  "rejection_counts_by_rule": {
+    "DURATION_TOO_LONG": 4
+  },
+  "auto_adjustments": [
+    {
+      "candidate_id": "C009",
+      "orig_duration_sec": 19.4,
+      "final_duration_sec": 24.4,
+      "sentence_group_snapped": false,
+      "duration_snap_note": "auto_snap_expand: 19.4s -> 24.4s"
+    }
+  ],
+  "rejected_candidates": [
+    {
+      "candidate_id": "C001",
+      "candidate_type": "continuous",
+      "arc_label": "altar_betrayal",
+      "rule_violated": "DURATION_TOO_LONG",
+      "detail": "Duration 70.0s > 60.0s (even after ±4.0s snap).",
+      "raw_segments": [
+        {
+          "episode": 1,
+          "start_block_id": "B007",
+          "end_block_id": "B053",
+          "role": "main"
+        }
+      ]
+    },
+    {
+      "candidate_id": "C004",
+      "candidate_type": "continuous",
+      "arc_label": "stranger_proposal",
+      "rule_violated": "DURATION_TOO_LONG",
+      "detail": "Duration 87.5s > 60.0s (even after ±4.0s snap).",
+      "raw_segments": [
+        {
+          "episode": 3,
+          "start_block_id": "B047",
+          "end_block_id": "B118",
+          "role": "cold_open_hook"
+        }
+      ]
+    },
+    {
+      "candidate_id": "C008",
+      "candidate_type": "cross_episode_stitched",
+      "arc_label": "the_shocking_proposal",
+      "rule_violated": "DURATION_TOO_LONG",
+      "detail": "Duration 66.5s > 60.0s (even after ±4.0s snap).",
+      "raw_segments": [
+        {
+          "episode": 3,
+          "start_block_id": "B111",
+          "end_block_id": "B118",
+          "role": "cold_open_hook"
+        },
+        {
+          "episode": 2,
+          "start_block_id": "B001",
+          "end_block_id": "B010",
+          "role": "setup"
+        },
+        {
+          "episode": 4,
+          "start_block_id": "B081",
+          "end_block_id": "B110",
+          "role": "cliffhanger"
+        }
+      ]
+    },
+    {
+      "candidate_id": "C010",
+      "candidate_type": "cross_episode_stitched",
+      "arc_label": "defiant_bride_montage",
+      "rule_violated": "DURATION_TOO_LONG",
+      "detail": "Duration 94.0s > 60.0s (even after ±4.0s snap).",
+      "raw_segments": [
+        {
+          "episode": 4,
+          "start_block_id": "B086",
+          "end_block_id": "B093",
+          "role": "cold_open_hook"
+        },
+        {
+          "episode": 1,
+          "start_block_id": "B007",
+          "end_block_id": "B053",
+          "role": "setup"
+        },
+        {
+          "episode": 3,
+          "start_block_id": "B111",
+          "end_block_id": "B118",
+          "role": "cliffhanger"
+        }
+      ]
+    }
+  ]
+}
