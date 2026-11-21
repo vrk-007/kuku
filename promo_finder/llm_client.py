@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_MODELS = {
-    "gemini": "gemini-2.5-flash",
+    "gemini": "gemini-3.5-flash-lite",
     "openai": "gpt-4o-mini",
     "anthropic": "claude-3-5-haiku-latest",
     "runcrate": "Qwen/Qwen3.8-Flash",
@@ -31,7 +31,7 @@ DEFAULT_MODELS = {
 
 # Approximate USD per 1M tokens (input, output) for cost estimation in reports
 MODEL_PRICING_PER_1M = {
-    "gemini-3.5-flash-lite": (0.075, 0.30),
+    "gemini-3.5-flash-lite": (0.30, 2.50),
     "gemini-3.1-flash-lite": (0.075, 0.30),
     "gemini-2.5-flash": (0.15, 0.60),
     "gemini-2.0-flash": (0.10, 0.40),

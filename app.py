@@ -68,12 +68,20 @@ with st.sidebar:
         "custom": "CUSTOM_API_KEY",
     }[provider]
     preset_key = _secret(env_key_name) or os.environ.get(env_key_name, "")
+    if preset_key and provider == "gemini":
+        key_placeholder = "Default Gemini key is ready"
+    elif preset_key:
+        key_placeholder = "Already default key is in use"
+    else:
+        key_placeholder = "Paste your API key"
     typed_key = st.text_input(
         "API key",
         type="password",
-        placeholder="Already default key is in use" if preset_key else "Paste your API key",
+        placeholder=key_placeholder,
         help="Leave blank to use the default key, or paste your own key to override it for this session (never stored on disk).",
     )
+    if preset_key and provider == "gemini" and not typed_key.strip():
+        st.caption("✅ No need to paste key for Gemini model — just upload files and click **Find Promos**.")
     api_key = typed_key.strip() or preset_key
     with st.expander("Advanced settings", expanded=False):
         delay = st.slider(
