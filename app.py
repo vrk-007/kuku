@@ -173,11 +173,6 @@ if run_clicked:
         st.error(f"Could not parse uploads: {e}")
         st.stop()
 
-    parsed_summary = (
-        f"Parsed {parsed['episode_count']} episodes · {parsed['total_blocks']} blocks · "
-        f"{len(parsed['all_unique_speakers'])} speaker tags · {parsed['total_duration_sec']/60:.1f} min"
-    )
-
     digest = hashlib.sha256(
         json.dumps([(n, hashlib.sha256(b).hexdigest()) for n, b in files]).encode()
     ).hexdigest()[:10]
@@ -196,7 +191,6 @@ if run_clicked:
         "error": None,
         "result": None,
         "out_dir": str(out_dir),
-        "parsed_summary": parsed_summary,
     }
 
     client = LLMClient(
@@ -237,7 +231,6 @@ if run_clicked:
                     "audit": res_out["audit_log"],
                     "metrics": res_out["metrics"],
                     "paths": {k: str(v) for k, v in res_out["paths"].items()},
-                    "parsed_summary": parsed_summary,
                 }
                 new_job["progress"] = 1.0
                 new_job["message"] = "Done"
@@ -258,8 +251,6 @@ if run_clicked:
     st.rerun()
 
 if is_running and job is not None:
-    st.success(job["parsed_summary"])
-
     @st.fragment(run_every=0.4)
     def _poll_progress() -> None:
         active = st.session_state.get("job")
@@ -286,8 +277,6 @@ if st.session_state.get("error_msg"):
 # ---------------- Results ----------------
 res = st.session_state.get("result")
 if res:
-    if res.get("parsed_summary"):
-        st.success(res["parsed_summary"])
     ranked, audit, metrics, paths = res["ranked"], res["audit"], res["metrics"], res["paths"]
 
     c1, c2, c3 = st.columns(3)
