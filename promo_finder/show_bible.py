@@ -5,7 +5,7 @@ and deterministically extracted per-episode unique speaker tags.
 
 Outputs:
   - premise (2 sentences)
-  - characters + script-only alias map (e.g., LADY IN GOLD GOWN -> Clarissa)
+  - characters + script-only alias map (resolving descriptive/role tags to canonical names)
   - continuous_arcs (multi-episode story groups for cross-episode stitching)
   - major_spoilers (late twists/reveals so Call 2/3 & Ranker can flag spoiler_risk)
 """
@@ -20,7 +20,7 @@ SYSTEM_PROMPT = """You are a senior story editor for vertical microdrama apps (l
 You will receive the episode loglines, continuity notes, and raw script speaker tags for an entire microdrama series.
 
 Your job is to build a concise, accurate JSON Show Bible that downstream promo-finding stages will rely on.
-Pay special attention to resolving visual/generic script speaker tags (like "LADY IN GOLD GOWN", "THE FORMER GROOM", "THE BEARDED STRANGER", "BLOND NOBLEMAN", "MATRIARCH") to their canonical character names from the loglines.
+Pay special attention to resolving visual, descriptive, or role-based script speaker tags (such as appearance descriptions, unnamed titles, or generic roles) to their canonical character names using the episode loglines and continuity notes.
 
 Return STRICT JSON matching this exact schema:
 {

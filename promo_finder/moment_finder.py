@@ -22,7 +22,7 @@ SYSTEM_PROMPT = """You are an elite performance-marketing video editor for verti
 Your job is to inspect ONE episode screenplay (with numbered blocks B001..Bxxx, exact timestamps, CAMERA, ACTION, SOUND FX, and DIALOGUE) and find the best 20 to 60-second social-media ad promo candidates.
 
 WHAT MAKES A WINNING MICRODRAMA PROMO:
-1. HOOK (0-3 seconds): Stops a scrolling stranger instantly — a slap, punch, shocking betrayal line, altar abandonment, sudden kneel/proposal, or dramatic visual close-up. NEVER start on a slow/quiet establishing shot or empty hallway.
+1. HOOK (0-3 seconds): Stops a scrolling stranger instantly — a slap, punch, shocking betrayal, sudden confrontation, dramatic reveal, or intense visual close-up. NEVER start on a slow/quiet establishing shot or empty hallway.
 2. CLIFFHANGER ENDING: Cuts at an unresolved emotional or plot peak (a threat, reveal, accusation, proposal, or cold-defiance close-up) so the viewer MUST click to see what happens next.
 3. STANDALONE CLARITY: Makes emotional sense to someone who has NEVER seen the show.
 4. DURATION: Total duration of segments MUST be between 20 and 60 seconds (calculate segment duration as last_block_end - first_block_start, since CAMERA/ACTION/DIALOGUE overlap).
@@ -41,7 +41,7 @@ Return STRICT JSON matching this schema:
   "candidates": [
     {
       "candidate_type": "continuous | intra_episode_stitched",
-      "arc_label": "short_snake_case_theme (e.g. altar_betrayal, stranger_rescue, witchcraft_trial)",
+      "arc_label": "short_snake_case_theme (e.g. public_betrayal, sudden_rescue, secret_identity_reveal)",
       "segments": [
         {
           "episode": 1,

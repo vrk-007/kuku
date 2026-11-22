@@ -3,7 +3,7 @@
 Runs ONE LLM call over the Show Bible's continuous arcs + all notable stitch beats
 and top episode moments extracted by Call 2. Proposes 5-8 high-impact multi-episode
 stitched promos (20-60s total), including ReelShort/DramaBox-style flash-forward
-cold opens (e.g., 4s peak shock from Ep 3 -> Ep 1 betrayal setup -> Ep 3 proposal).
+cold opens (e.g., 4s peak shock from a later episode -> Ep 1 setup -> unresolved cliffhanger).
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ Your job is to assemble 5 to 8 killer CROSS-EPISODE STITCHED PROMOS (2 to 3 segm
 
 WINNING STITCHED AD FORMULAS:
 1. FLASH-FORWARD COLD OPEN: Start with a 3-6s explosive visual/dialogue shock from a later episode (e.g., a punch, a slap, a public proposal, a dramatic rescue) -> cut back to the earlier episode setup (betrayal/humiliation) -> jump to the unresolved cliffhanger.
-2. MINI-ARC MONTAGE: Stitch 2-3 consecutive episodes in order (e.g. Ep 1 altar betrayal -> Ep 3 guards dragging her + stranger rescuing & proposing) so a cold viewer gets the full emotional hook in 35-55 seconds.
+2. MINI-ARC MONTAGE: Stitch 2-3 consecutive episodes in order (e.g. Ep 1 public betrayal/setup -> Ep 3 dramatic reversal or cliffhanger) so a cold viewer gets the full emotional hook in 35-55 seconds.
 
 STRICT RULES:
 - Use ONLY exact `episode`, `start_block_id`, and `end_block_id` values from the provided beat menu (or tighter sub-ranges within those same episodes).
