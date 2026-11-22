@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import threading
 import time
 from pathlib import Path
 from typing import Any, Callable
 
 from promo_finder.judge import judge_candidates_blind
-from promo_finder.llm_client import LLMClient
+from promo_finder.llm_client import LLMClient, PipelineCancelled
 from promo_finder.moment_finder import find_episode_candidates
 from promo_finder.parser import parse_episode_text
 from promo_finder.ranker import rank_promos
@@ -47,32 +48,43 @@ def run_pipeline(
     client: LLMClient,
     out_dir: str | Path,
     progress: Callable[[float, str], None] | None = None,
+    cancel_event: threading.Event | None = None,
 ) -> dict[str, Any]:
     """Run Steps 3-7 and export files. Returns dict with ranked promos, audit log, metrics, paths."""
     t0 = time.time()
     p = progress or (lambda frac, msg: None)
     n = max(1, parsed_show["episode_count"])
 
-    p(0.02, "Building Show Bible (Call 1)...")
+    def _check_cancel() -> None:
+        if cancel_event and cancel_event.is_set():
+            raise PipelineCancelled("Stopped by user.")
+
+    _check_cancel()
+    p(0.02, "Building Show Summary (Call 1)...")
     bible = build_show_bible(parsed_show, client)
 
     episode_results: list[dict[str, Any]] = []
     raw_candidates: list[dict[str, Any]] = []
     for i, ep in enumerate(parsed_show["episodes"], start=1):
+        _check_cancel()
         p(0.05 + 0.6 * (i - 1) / n, f"Scanning episode {ep['episode_number']} ({i}/{n}) (Call 2)...")
         er = find_episode_candidates(ep, bible, client)
         episode_results.append(er)
         raw_candidates.extend(er.get("candidates", []))
 
+    _check_cancel()
     p(0.68, "Stitching cross-episode promos (Call 3)...")
     raw_candidates.extend(generate_cross_episode_promos(parsed_show, bible, episode_results, client))
 
+    _check_cancel()
     p(0.78, f"Validating {len(raw_candidates)} candidates...")
     valid, audit_log = validate_candidates(raw_candidates, parsed_show)
 
+    _check_cancel()
     p(0.85, f"Blind judge scoring {len(valid)} valid promos (Call 4)...")
-    judged = judge_candidates_blind(valid, client, batch_size=6)
+    judged = judge_candidates_blind(valid, client, batch_size=6, cancel_event=cancel_event)
 
+    _check_cancel()
     p(0.95, "Ranking and exporting reports...")
     ranked = rank_promos(judged)
     metrics = dict(client.stats)

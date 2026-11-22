@@ -15,11 +15,16 @@ import hashlib
 import json
 import os
 import re
+import threading
 import time
 import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any
+
+
+class PipelineCancelled(Exception):
+    """Raised when a running pipeline is cancelled by the user."""
 
 DEFAULT_MODELS = {
     "gemini": "gemini-3.5-flash-lite",
@@ -92,6 +97,7 @@ class LLMClient:
         temperature: float = 0.2,
         min_delay_sec: float = 0.5,
         max_retries: int = 5,
+        cancel_event: threading.Event | None = None,
     ) -> None:
         load_dotenv_simple()
         env_provider = (os.environ.get("LLM_PROVIDER") or "gemini").strip().lower()
@@ -111,6 +117,7 @@ class LLMClient:
         self.temperature = temperature
         self.min_delay_sec = min_delay_sec
         self.max_retries = max_retries
+        self.cancel_event = cancel_event
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self._last_call_ts = 0.0
@@ -188,6 +195,20 @@ class LLMClient:
     def estimate_cost_usd(self) -> float:
         return round(self.stats.get("cost_usd", 0.0), 4)
 
+    def _check_cancel(self) -> None:
+        if self.cancel_event and self.cancel_event.is_set():
+            raise PipelineCancelled("Stopped by user.")
+
+    def _sleep_or_cancel(self, seconds: float) -> None:
+        if seconds <= 0:
+            self._check_cancel()
+            return
+        if self.cancel_event:
+            if self.cancel_event.wait(seconds):
+                raise PipelineCancelled("Stopped by user.")
+        else:
+            time.sleep(seconds)
+
     def call_json(
         self,
         stage: str,
@@ -196,6 +217,7 @@ class LLMClient:
         use_cache: bool = True,
     ) -> dict[str, Any]:
         """Execute a JSON-structured LLM call with caching and exponential backoff."""
+        self._check_cancel()
         cache_file = self._cache_key(stage, system_prompt, user_prompt)
         if use_cache and cache_file.exists():
             cached = json.loads(cache_file.read_text(encoding="utf-8"))
@@ -215,15 +237,18 @@ class LLMClient:
 
         last_err: Exception | None = None
         for attempt in range(1, self.max_retries + 1):
+            self._check_cancel()
             elapsed = time.time() - self._last_call_ts
             if elapsed < self.min_delay_sec:
-                time.sleep(self.min_delay_sec - elapsed)
+                self._sleep_or_cancel(self.min_delay_sec - elapsed)
+            self._check_cancel()
             self._last_call_ts = time.time()
 
             try:
                 raw_text, in_tok, out_tok = self._dispatch(
                     self._model_for(stage), system_prompt, user_prompt
                 )
+                self._check_cancel()
                 data = _extract_json_object(raw_text)
                 self._record_usage(stage, in_tok, out_tok, from_cache=False)
                 if use_cache:
@@ -243,20 +268,22 @@ class LLMClient:
                         encoding="utf-8",
                     )
                 return data
+            except PipelineCancelled:
+                raise
             except urllib.error.HTTPError as e:
                 body = e.read().decode("utf-8", errors="replace") if e.fp else ""
                 last_err = RuntimeError(f"HTTP {e.code} from {self.provider}: {body[:400]}")
                 if e.code in (429, 500, 502, 503, 504):
                     wait = min(60.0, (2 ** attempt) + 1.5)
                     print(f"  [{stage}] HTTP {e.code} (attempt {attempt}/{self.max_retries}), retrying in {wait:.1f}s...")
-                    time.sleep(wait)
+                    self._sleep_or_cancel(wait)
                 else:
                     raise last_err
             except (json.JSONDecodeError, urllib.error.URLError, TimeoutError, Exception) as e:
                 last_err = e
                 wait = min(30.0, (2 ** attempt))
                 print(f"  [{stage}] Error '{type(e).__name__}: {str(e)[:120]}' (attempt {attempt}/{self.max_retries}), retrying in {wait:.1f}s...")
-                time.sleep(wait)
+                self._sleep_or_cancel(wait)
 
         raise RuntimeError(f"LLM call failed after {self.max_retries} attempts in stage '{stage}': {last_err}")
 

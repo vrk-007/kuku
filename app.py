@@ -8,11 +8,12 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import threading
 from pathlib import Path
 
 import streamlit as st
 
-from promo_finder.llm_client import DEFAULT_MODELS, LLMClient, load_dotenv_simple
+from promo_finder.llm_client import DEFAULT_MODELS, LLMClient, PipelineCancelled, load_dotenv_simple
 from promo_finder.pipeline import parse_uploaded_files, run_pipeline
 
 st.set_page_config(page_title="Promo Finder", page_icon="🎬", layout="wide")
@@ -104,9 +105,61 @@ uploads = st.file_uploader(
 if uploads:
     st.write(f"**{len(uploads)}** file(s) selected.")
 
-run_clicked = st.button("🚀 Find Promos", type="primary", disabled=not uploads)
+# ---------------- Run / Stop Controls ----------------
+job = st.session_state.get("job")
+if job is not None:
+    with job["lock"]:
+        job_done = job["done"]
+        job_cancelled = job["cancelled"]
+        job_error = job["error"]
+        job_result = job["result"]
+    if job_done:
+        st.session_state.pop("job", None)
+        if job_cancelled:
+            st.session_state["stopped_msg"] = (
+                "⏹️ Processing stopped. No further files were processed — replace files to start fresh, "
+                "or click **Find Promos** on the same files to reuse completed steps."
+            )
+        elif job_error:
+            st.session_state["error_msg"] = job_error
+        elif job_result is not None:
+            st.session_state["result"] = job_result
+        job = None
+
+is_running = job is not None
+
+btn_col1, btn_col2, _ = st.columns([1.4, 1.0, 5.6])
+with btn_col1:
+    run_clicked = st.button(
+        "🚀 Find Promos",
+        type="primary",
+        disabled=(not uploads) or is_running,
+        use_container_width=True,
+    )
+with btn_col2:
+    stop_clicked = st.button(
+        "🛑 Stop",
+        type="secondary",
+        disabled=not is_running,
+        use_container_width=True,
+    )
+
+if stop_clicked and job is not None:
+    job["cancel_event"].set()
+    st.session_state.pop("job", None)
+    st.session_state.pop("result", None)
+    st.session_state.pop("error_msg", None)
+    st.session_state["stopped_msg"] = (
+        "⏹️ Processing stopped. No further files were processed — replace files to start fresh, "
+        "or click **Find Promos** on the same files to reuse completed steps."
+    )
+    st.rerun()
 
 if run_clicked:
+    st.session_state.pop("stopped_msg", None)
+    st.session_state.pop("error_msg", None)
+    st.session_state.pop("result", None)
+
     if not api_key:
         st.error(f"Please paste a {provider} API key in the sidebar.")
         st.stop()
@@ -120,7 +173,7 @@ if run_clicked:
         st.error(f"Could not parse uploads: {e}")
         st.stop()
 
-    st.success(
+    parsed_summary = (
         f"Parsed {parsed['episode_count']} episodes · {parsed['total_blocks']} blocks · "
         f"{len(parsed['all_unique_speakers'])} speaker tags · {parsed['total_duration_sec']/60:.1f} min"
     )
@@ -131,6 +184,21 @@ if run_clicked:
     out_dir = WEB_OUT_ROOT / digest
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    cancel_event = threading.Event()
+    lock = threading.Lock()
+    new_job: dict = {
+        "cancel_event": cancel_event,
+        "lock": lock,
+        "progress": 0.0,
+        "message": "Starting...",
+        "done": False,
+        "cancelled": False,
+        "error": None,
+        "result": None,
+        "out_dir": str(out_dir),
+        "parsed_summary": parsed_summary,
+    }
+
     client = LLMClient(
         provider=provider,
         model=model.strip() or None,
@@ -138,33 +206,88 @@ if run_clicked:
         base_url=base_url.strip() or None,
         cache_dir=out_dir / ".cache",
         min_delay_sec=delay,
+        cancel_event=cancel_event,
     )
     if not use_cache:
         orig_call = client.call_json
         client.call_json = lambda stage, s, u, use_cache=True: orig_call(stage, s, u, use_cache=False)
 
-    bar = st.progress(0.0, text="Starting...")
-
     def _progress(frac: float, msg: str) -> None:
-        bar.progress(min(1.0, max(0.0, frac)), text=msg)
+        with lock:
+            new_job["progress"] = min(1.0, max(0.0, frac))
+            new_job["message"] = msg
 
-    try:
-        result = run_pipeline(parsed, client, out_dir, progress=_progress)
-    except Exception as e:  # noqa: BLE001
-        st.error(f"Pipeline failed: {e}")
-        st.info("Cached progress is kept — fix the issue (key, quota, delay) and click Find Promos again.")
-        st.stop()
+    def _worker() -> None:
+        try:
+            res_out = run_pipeline(
+                parsed,
+                client,
+                out_dir,
+                progress=_progress,
+                cancel_event=cancel_event,
+            )
+            if cancel_event.is_set():
+                with lock:
+                    new_job["cancelled"] = True
+                    new_job["done"] = True
+                return
+            with lock:
+                new_job["result"] = {
+                    "ranked": res_out["ranked"],
+                    "audit": res_out["audit_log"],
+                    "metrics": res_out["metrics"],
+                    "paths": {k: str(v) for k, v in res_out["paths"].items()},
+                    "parsed_summary": parsed_summary,
+                }
+                new_job["progress"] = 1.0
+                new_job["message"] = "Done"
+                new_job["done"] = True
+        except PipelineCancelled:
+            with lock:
+                new_job["cancelled"] = True
+                new_job["done"] = True
+        except Exception as exc:  # noqa: BLE001
+            with lock:
+                new_job["error"] = str(exc)
+                new_job["done"] = True
 
-    st.session_state["result"] = {
-        "ranked": result["ranked"],
-        "audit": result["audit_log"],
-        "metrics": result["metrics"],
-        "paths": {k: str(v) for k, v in result["paths"].items()},
-    }
+    worker_thread = threading.Thread(target=_worker, daemon=True)
+    new_job["thread"] = worker_thread
+    st.session_state["job"] = new_job
+    worker_thread.start()
+    st.rerun()
+
+if is_running and job is not None:
+    st.success(job["parsed_summary"])
+
+    @st.fragment(run_every=0.4)
+    def _poll_progress() -> None:
+        active = st.session_state.get("job")
+        if active is None:
+            return
+        with active["lock"]:
+            frac = active["progress"]
+            msg = active["message"]
+            done = active["done"]
+        st.progress(frac, text=msg)
+        if done:
+            st.rerun(scope="app")
+
+    _poll_progress()
+    st.caption("Processing... Click **🛑 Stop** anytime to cancel.")
+
+if st.session_state.get("stopped_msg"):
+    st.warning(st.session_state["stopped_msg"])
+
+if st.session_state.get("error_msg"):
+    st.error(f"Pipeline failed: {st.session_state['error_msg']}")
+    st.info("Cached progress is kept — fix the issue (key, quota, delay) and click Find Promos again.")
 
 # ---------------- Results ----------------
 res = st.session_state.get("result")
 if res:
+    if res.get("parsed_summary"):
+        st.success(res["parsed_summary"])
     ranked, audit, metrics, paths = res["ranked"], res["audit"], res["metrics"], res["paths"]
 
     c1, c2, c3 = st.columns(3)

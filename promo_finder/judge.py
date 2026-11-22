@@ -11,9 +11,10 @@ with Show Bible context).
 
 from __future__ import annotations
 
+import threading
 from typing import Any
 
-from promo_finder.llm_client import LLMClient
+from promo_finder.llm_client import LLMClient, PipelineCancelled
 
 SYSTEM_PROMPT = """You are a cold-audience viewer scrolling Instagram Reels / TikTok who has NEVER heard of this show before.
 You will be given a batch of candidate promo clips (ONLY their raw screenplay blocks: CAMERA, ACTION, SOUND FX, DIALOGUE — you have NO background info about the show).
@@ -48,11 +49,14 @@ def judge_candidates_blind(
     valid_candidates: list[dict[str, Any]],
     client: LLMClient,
     batch_size: int = 6,
+    cancel_event: threading.Event | None = None,
 ) -> list[dict[str, Any]]:
     """Run Call 4 in batches over all validated candidates."""
     eval_map: dict[str, dict[str, Any]] = {}
 
     for i in range(0, len(valid_candidates), batch_size):
+        if cancel_event and cancel_event.is_set():
+            raise PipelineCancelled("Stopped by user.")
         batch = valid_candidates[i : i + batch_size]
         batch_num = (i // batch_size) + 1
         parts = [f"Evaluate these {len(batch)} promo clips as a strictly blind first-time viewer:\n"]
