@@ -25,6 +25,7 @@ STRICT RULES:
 - Use ONLY exact `episode`, `start_block_id`, and `end_block_id` values from the provided beat menu (or tighter sub-ranges within those same episodes).
 - Total summed duration of all segments in a promo MUST be between 22 and 58 seconds (aim for 30-50s).
 - Every stitched promo MUST include segments from at least 2 DIFFERENT episodes.
+- Prefer stitching beats from the SAME tight mini-arc (and prioritize arcs marked `cold-friendly: YES`) so the ad feels cohesive and makes instant sense to a first-time viewer.
 - Segment order should be the intended playback order (flash-forward cold opens ARE encouraged!).
 - Tag `spoiler_risk` honestly using the Show Bible's spoiler list.
 
@@ -102,8 +103,10 @@ def generate_cross_episode_promos(
         "=== CONTINUOUS ARCS ===",
     ]
     for arc in bible.get("continuous_arcs", []):
+        cold_flag = "YES" if arc.get("is_cold_audience_friendly") else "NO"
         lines.append(
-            f"- {arc.get('arc_id')} (Eps {arc.get('episodes')}): {arc.get('title')} — {arc.get('core_conflict')}"
+            f"- {arc.get('arc_id')} (Eps {arc.get('episodes')}) [cold-friendly: {cold_flag}]: "
+            f"{arc.get('title')} — {arc.get('core_conflict')}"
         )
 
     lines.append("\n=== AVAILABLE STITCH BEATS (with exact verified durations) ===")
